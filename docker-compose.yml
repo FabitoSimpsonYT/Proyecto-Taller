@@ -1,0 +1,76 @@
+services:
+  # Base de datos MariaDB
+  mariadb:
+    build:
+      context: ./scripts
+      dockerfile: Dockerfile
+    container_name: ${MARIADB_CONTAINER_NAME:-taller_mariadb}
+    environment:
+      MARIADB_DATABASE: ${DB_NAME:-taller_db}
+      MARIADB_USER: ${DB_USER:-taller_user}
+      MARIADB_PASSWORD: ${DB_PASSWORD:-taller_password}
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-root_root_password}
+    ports:
+      - "${DB_PORT:-3306}:3306"
+    volumes:
+      - mariadb_data:/var/lib/mysql
+      - ./scripts:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "mariadb-admin ping -h localhost -u $$MARIADB_USER -p$$MARIADB_PASSWORD"]
+      timeout: 10s
+      retries: 5
+      start_period: 10s
+    networks:
+      - pern_network
+    restart: unless-stopped
+
+  # Backend (Node.js + Express)
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: ${BACKEND_CONTAINER_NAME:-pern_backend}
+    environment:
+      NODE_ENV: ${NODE_ENV:-production}
+      DB_HOST: ${DB_HOST:-mariadb}
+      DB_PORT: ${DB_PORT:-3306}
+      DB_NAME: ${DB_NAME:-taller_db}
+      DB_USER: ${DB_USER:-taller_user}
+      DB_PASSWORD: ${DB_PASSWORD:-taller_password}
+      JWT_SECRET: ${JWT_SECRET:-taller_jwt_secret_key_12345}
+      API_PORT: ${API_PORT:-5000}
+    ports:
+      - "${API_PORT:-5000}:${API_PORT:-5000}"
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    networks:
+      - pern_network
+    restart: unless-stopped
+    command: npm start
+
+  # Frontend (React + Nginx)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: ${FRONTEND_CONTAINER_NAME:-pern_frontend}
+    environment:
+      REACT_APP_API_URL: ${REACT_APP_API_URL:-http://backend:5000}
+    ports:
+      - "${FRONTEND_PORT:-5173}:80"
+    depends_on:
+      - backend
+    networks:
+      - pern_network
+    restart: unless-stopped
+
+volumes:
+  mariadb_data:
+
+networks:
+  pern_network:
+    driver: bridge
