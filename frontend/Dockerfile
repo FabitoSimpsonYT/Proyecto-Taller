@@ -7,7 +7,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Instalar dependencias
-RUN npm install
+RUN npm install --legacy-peer-deps
 
 # Copiar el código
 COPY . .
@@ -29,7 +29,7 @@ EXPOSE 80
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-  CMD wget --quiet --tries=1 --spider http://localhost/ || exit 1
+  CMD wget --quiet --tries=1 --spider http://localhost/health || exit 1
 
 # Iniciar nginx
 CMD ["nginx", "-g", "daemon off;"]
