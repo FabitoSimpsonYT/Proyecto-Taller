@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { API_URL } from '../utils/api';
 import '../styles/Taller.css';
 
 function Reception() {
@@ -25,7 +26,7 @@ function Reception() {
 
   const fetchUserProfile = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/auth/profile', {
+      const response = await fetch(`${API_URL}/api/auth/profile`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
 
@@ -45,7 +46,7 @@ function Reception() {
   const fetchBuses = async () => {
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:5000/api/admin/buses', {
+      const response = await fetch(`${API_URL}/api/admin/buses`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
 
@@ -88,7 +89,7 @@ function Reception() {
         status: item.status
       }));
 
-      const worklistRes = await fetch(`http://localhost:5000/api/admin/inspections/worklist`, {
+      const worklistRes = await fetch(`${API_URL}/api/admin/inspections/worklist`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
