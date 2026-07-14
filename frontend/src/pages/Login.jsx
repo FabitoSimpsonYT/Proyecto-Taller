@@ -2,14 +2,13 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../styles/index.css';
+import { API_URL } from '../utils/api';
 
 function Login({ setToken }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
-
-  const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
 
   const handleLogin = async (e, isGuest = false) => {
     if (e) e.preventDefault();

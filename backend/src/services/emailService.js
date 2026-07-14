@@ -13,7 +13,7 @@ const sendRegistrationEmail = async (owner_email, owner_name, patente, reservati
       },
     });
 
-    const confirmUrl = `http://localhost:5173/confirm-attendance/${bus_id}`;
+    const confirmUrl = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/confirm-attendance/${bus_id}`;
 
     let info = await transporter.sendMail({
       from: '"Taller Admin" <admin@taller.local>',

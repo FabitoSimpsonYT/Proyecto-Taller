@@ -1,0 +1,26 @@
+{
+  "planHash": "cc3567a1c6b9aebfc82accf9f2a23ee6ae2658ff604b98ba305425224d2f0241",
+  "phase": "baseline",
+  "recordedAtUtc": "2026-07-14T16:41:57.7528626Z",
+  "retryCount": 0,
+  "resetBaseline": false,
+  "result": {
+    "setupSucceeded": true,
+    "setupDurationMs": 0,
+    "setupFailureOutput": null,
+    "assertions": [
+      {
+        "name": "Build the React app",
+        "kind": "process",
+        "verificationMethod": "exit-code",
+        "passed": false,
+        "timedOut": false,
+        "skipped": false,
+        "skippedReason": null,
+        "exitCode": null,
+        "outputSample": "\u003Cspawn error: An error occurred trying to start process \u0027npm run build\u0027 with working directory \u0027c:\\Users\\fabit\\Desktop\\Proyecto-Taller\\frontend\u0027. El sistema no puede encontrar el archivo especificado.\u003E\n",
+        "durationMs": 57
+      }
+    ]
+  }
+}

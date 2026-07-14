@@ -1,0 +1,14 @@
+{
+  "name": "frontend-runtime-baseline",
+  "description": "Baseline runtime validation for the React frontend",
+  "projectType": "webapp",
+  "assertions": [
+    {
+      "id": "build",
+      "name": "Build the React app",
+      "type": "command",
+      "command": "npm run build",
+      "expected": "exitCode 0"
+    }
+  ]
+}

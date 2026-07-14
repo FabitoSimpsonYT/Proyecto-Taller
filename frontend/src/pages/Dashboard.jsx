@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/Dashboard.css';
+import { API_URL } from '../utils/api';
 
 function Dashboard({ handleLogout }) {
   const navigate = useNavigate();
@@ -17,7 +18,7 @@ function Dashboard({ handleLogout }) {
 
   const fetchUserProfile = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/auth/profile', {
+      const response = await fetch(`${API_URL}/api/auth/profile`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
 
@@ -38,7 +39,7 @@ function Dashboard({ handleLogout }) {
 
   const fetchBuses = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/admin/buses', {
+      const response = await fetch(`${API_URL}/api/admin/buses`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
 
@@ -139,7 +140,7 @@ function Dashboard({ handleLogout }) {
 function AdminPending({ buses, token, onUpdate, navigate }) {
   const confirmAttendance = async (busId) => {
     try {
-      const response = await fetch('http://localhost:5000/api/inspections/confirm-attendance', {
+      const response = await fetch(`${API_URL}/api/inspections/confirm-attendance`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

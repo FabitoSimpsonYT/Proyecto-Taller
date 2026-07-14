@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/Taller.css';
+import { API_URL } from '../utils/api';
 
 function Taller({ handleLogout }) {
   const navigate = useNavigate();
@@ -28,7 +29,7 @@ function Taller({ handleLogout }) {
 
   const fetchUserProfile = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/auth/profile', {
+      const response = await fetch(`${API_URL}/api/auth/profile`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
 
@@ -48,7 +49,7 @@ function Taller({ handleLogout }) {
   const fetchBuses = async () => {
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:5000/api/admin/buses', {
+      const response = await fetch(`${API_URL}/api/admin/buses`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
 
@@ -75,7 +76,7 @@ function Taller({ handleLogout }) {
     setInitialDiagnosis(null);
     
     try {
-      const res = await fetch(`http://localhost:5000/api/admin/inspections/${bus.id}`, {
+      const res = await fetch(`${API_URL}/api/admin/inspections/${bus.id}`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (res.ok) {
@@ -148,7 +149,7 @@ function Taller({ handleLogout }) {
     setSubmitStatus({ loading: true, error: null, success: null });
     
     try {
-      const response = await fetch('http://localhost:5000/api/admin/repairs', {
+      const response = await fetch(`${API_URL}/api/admin/repairs`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -191,7 +192,7 @@ function Taller({ handleLogout }) {
     setSubmitStatus({ loading: true, error: null, success: null });
     
     try {
-      const response = await fetch('http://localhost:5000/api/admin/repairs', {
+      const response = await fetch(`${API_URL}/api/admin/repairs`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

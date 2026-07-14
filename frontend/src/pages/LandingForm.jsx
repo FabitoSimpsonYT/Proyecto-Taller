@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { API_URL } from '../utils/api';
 
 function LandingForm() {
   const navigate = useNavigate();
@@ -89,7 +90,7 @@ function LandingForm() {
 
     setSearchingClient(true);
     try {
-      const response = await fetch(`http://localhost:5000/api/clientes/${rut}`);
+      const response = await fetch(`${API_URL}/api/clientes/${rut}`);
       if (response.ok) {
         const data = await response.json();
         setFormData(prev => ({
@@ -112,7 +113,7 @@ function LandingForm() {
 
     setSearchingPatente(true);
     try {
-      const response = await fetch(`http://localhost:5000/api/vehiculos/${patente}`);
+      const response = await fetch(`${API_URL}/api/vehiculos/${patente}`);
       if (response.ok) {
         const data = await response.json();
         setFormData(prev => ({
@@ -191,7 +192,7 @@ function LandingForm() {
         headers['Authorization'] = `Bearer ${token}`;
       }
 
-      const response = await fetch('http://localhost:5000/api/reserva-atencion', {
+      const response = await fetch(`${API_URL}/api/reserva-atencion`, {
         method: 'POST',
         headers: headers,
         body: JSON.stringify(dataToSubmit)

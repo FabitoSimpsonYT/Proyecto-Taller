@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { API_URL } from '../utils/api';
 
 function ConfirmAttendance() {
   const { id } = useParams();
@@ -9,10 +10,13 @@ function ConfirmAttendance() {
   useEffect(() => {
     const confirm = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/api/reserva-atencion/${id}/confirm`, {
+        const response = await fetch(`${API_URL}/api/reserva-atencion/${id}/confirm`, {
           method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          }
         });
-        
+
         if (response.ok) {
           setStatus('success');
         } else {
@@ -23,8 +27,12 @@ function ConfirmAttendance() {
         setStatus('error');
       }
     };
-    
-    confirm();
+
+    if (id) {
+      confirm();
+    } else {
+      setStatus('error');
+    }
   }, [id]);
 
   return (
