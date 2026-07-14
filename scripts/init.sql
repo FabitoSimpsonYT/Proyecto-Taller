@@ -13,8 +13,10 @@ CREATE TABLE IF NOT EXISTS users (
 CREATE TABLE IF NOT EXISTS buses (
     id INT AUTO_INCREMENT PRIMARY KEY,
     patente VARCHAR(20) UNIQUE NOT NULL,
-    carroceria VARCHAR(100),
-    chasis VARCHAR(100),
+    marca_carroceria VARCHAR(100),
+    modelo_carroceria VARCHAR(100),
+    marca_chasis VARCHAR(100),
+    modelo_chasis VARCHAR(100),
     ano_fabricacion INT,
     
     owner_rut VARCHAR(20) NOT NULL,
@@ -31,12 +33,13 @@ CREATE TABLE IF NOT EXISTS buses (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Crear tabla de inspecciones (Checklist de revisión técnica)
+-- Crear tabla de inspecciones (Worklist de revisión técnica)
 CREATE TABLE IF NOT EXISTS inspections (
     id INT AUTO_INCREMENT PRIMARY KEY,
     bus_id INT NOT NULL,
     inspector_id INT NOT NULL, -- El admin que realizó la inspección
     items JSON NOT NULL, -- [{ item_name: 'Frenos', status: 'pass'|'fail'|'pending' }]
+    partes_3d_danadas JSON, -- [{ part_id: 'front_bumper', description: 'Roto' }]
     exams_notes TEXT,
     inspection_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (bus_id) REFERENCES buses(id) ON DELETE CASCADE,
@@ -47,3 +50,16 @@ CREATE TABLE IF NOT EXISTS inspections (
 INSERT IGNORE INTO users (full_name, email, password, role) VALUES 
 ('Administrador Taller', 'administrador@gmail.com', '$2a$10$lsa7jjcY6MC.qNm2LQ1uDuJGmSCHZnEgrkV5dqLYWVYdiI7UowvDy', 'admin'); 
 -- pass: admin123
+
+-- Crear tabla de reparaciones
+CREATE TABLE IF NOT EXISTS repairs (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    bus_id INT NOT NULL,
+    mechanic_id INT NOT NULL,
+    description TEXT NOT NULL,
+    repuestos_utilizados JSON, -- [{ repuesto: 'Filtro', cantidad: 1, costo: 15000 }]
+    status ENUM('in_progress', 'completed') DEFAULT 'in_progress',
+    repair_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (bus_id) REFERENCES buses(id) ON DELETE CASCADE,
+    FOREIGN KEY (mechanic_id) REFERENCES users(id) ON DELETE CASCADE
+);

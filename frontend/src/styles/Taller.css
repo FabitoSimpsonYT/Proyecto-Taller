@@ -1,0 +1,494 @@
+.taller-container {
+  min-height: 100vh;
+  background-color: #0d0d0d;
+  color: #fff;
+  font-family: 'Inter', system-ui, sans-serif;
+  display: flex;
+  flex-direction: column;
+}
+
+.taller-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 40px;
+  background-color: #1a1a1a;
+  border-bottom: 2px solid #333;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+
+.header-left h1 {
+  margin: 0;
+  color: #fce300;
+  font-size: 24px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.btn-back {
+  background: transparent;
+  border: 1px solid #444;
+  color: #ccc;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 500;
+}
+
+.btn-back:hover {
+  background: #333;
+  color: #fff;
+  border-color: #666;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.user-name {
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.role.mechanic {
+  background-color: rgba(252, 227, 0, 0.15);
+  color: #fce300;
+  border: 1px solid #fce300;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.taller-content {
+  flex: 1;
+  padding: 40px;
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.section-title {
+  color: #fff;
+  font-size: 28px;
+  margin-bottom: 30px;
+  border-bottom: 2px solid #333;
+  padding-bottom: 10px;
+}
+
+.taller-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 25px;
+}
+
+.bus-card {
+  background: linear-gradient(145deg, #1f1f1f, #141414);
+  border: 1px solid #333;
+  border-radius: 12px;
+  padding: 25px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.bus-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: #fce300;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+}
+
+.bus-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  border-color: #444;
+}
+
+.bus-card:hover::before {
+  transform: scaleX(1);
+}
+
+.bus-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.bus-card-header h3 {
+  margin: 0;
+  font-size: 28px;
+  color: #fff;
+  letter-spacing: 2px;
+  font-family: monospace;
+}
+
+.status-badge.process {
+  background-color: #fce300;
+  color: #000;
+  padding: 5px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.bus-card-body p {
+  margin: 8px 0;
+  color: #aaa;
+  font-size: 14px;
+}
+
+.bus-card-body strong {
+  color: #eee;
+}
+
+.bus-card-footer {
+  margin-top: 25px;
+  border-top: 1px solid #333;
+  padding-top: 15px;
+  text-align: right;
+}
+
+.btn-start-inspection {
+  background: transparent;
+  border: none;
+  color: #fce300;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  transition: color 0.2s;
+  padding: 0;
+}
+
+.bus-card:hover .btn-start-inspection {
+  color: #fff;
+}
+
+/* WORKSPACE LAYOUT */
+.workspace-header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.btn-cancel {
+  background: rgba(255, 68, 68, 0.1);
+  border: 1px solid #ff4444;
+  color: #ff4444;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.btn-cancel:hover {
+  background: #ff4444;
+  color: #fff;
+}
+
+.workspace-header h2 {
+  margin: 0;
+  color: #fff;
+}
+
+.patente-highlight {
+  color: #fce300;
+  font-family: monospace;
+  letter-spacing: 2px;
+}
+
+.workspace-layout {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 40px;
+}
+
+.vehicle-info-panel {
+  background: #151515;
+  border: 1px solid #222;
+  border-radius: 12px;
+  padding: 25px;
+  height: fit-content;
+}
+
+.vehicle-info-panel h3 {
+  margin-top: 0;
+  margin-bottom: 25px;
+  color: #fce300;
+  font-size: 18px;
+  border-bottom: 1px solid #333;
+  padding-bottom: 15px;
+}
+
+.info-group {
+  margin-bottom: 15px;
+}
+
+.info-group label {
+  display: block;
+  font-size: 12px;
+  color: #888;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.info-group p {
+  margin: 0;
+  font-size: 15px;
+  color: #eee;
+  font-weight: 500;
+}
+
+.vehicle-info-panel hr {
+  border: 0;
+  height: 1px;
+  background: #333;
+  margin: 25px 0;
+}
+
+/* WORKLIST FORM */
+.inspection-form-panel {
+  background: #151515;
+  border: 1px solid #222;
+  border-radius: 12px;
+  padding: 30px;
+}
+
+.items-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.items-header h4 {
+  margin: 0;
+  color: #fff;
+  font-size: 20px;
+}
+
+.btn-add {
+  background: transparent;
+  border: 1px dashed #666;
+  color: #aaa;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-weight: 500;
+}
+
+.btn-add:hover {
+  border-color: #fce300;
+  color: #fce300;
+}
+
+.items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 40px;
+}
+
+.worklist-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #1f1f1f;
+  padding: 15px;
+  border-radius: 8px;
+  border-left: 4px solid #444;
+  transition: all 0.2s;
+}
+
+.worklist-item.pass { border-left-color: #00ff88; }
+.worklist-item.fail { border-left-color: #ff4444; }
+.worklist-item.pending { border-left-color: #fce300; }
+
+.item-name {
+  flex: 1;
+}
+
+.item-name input {
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 16px;
+  width: 100%;
+  outline: none;
+}
+
+.item-name input::placeholder {
+  color: #666;
+}
+
+.item-status {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.status-select {
+  background: #2a2a2a;
+  color: #fff;
+  border: 1px solid #444;
+  padding: 10px 15px;
+  border-radius: 6px;
+  outline: none;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.status-select.pass { color: #00ff88; border-color: #00ff88; }
+.status-select.fail { color: #ff4444; border-color: #ff4444; }
+.status-select.pending { color: #fce300; border-color: #fce300; }
+
+.btn-remove {
+  background: transparent;
+  border: none;
+  color: #666;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 0 5px;
+}
+
+.btn-remove:hover {
+  color: #ff4444;
+}
+
+.notes-section h4 {
+  color: #fff;
+  font-size: 20px;
+  margin-bottom: 15px;
+}
+
+.notes-section textarea {
+  width: 100%;
+  background: #1f1f1f;
+  border: 1px solid #333;
+  color: #fff;
+  padding: 15px;
+  border-radius: 8px;
+  font-size: 15px;
+  resize: vertical;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.notes-section textarea:focus {
+  border-color: #fce300;
+}
+
+.form-actions {
+  margin-top: 40px;
+  text-align: right;
+}
+
+.btn-submit {
+  background: linear-gradient(45deg, #fce300, #ffb300);
+  color: #000;
+  border: none;
+  padding: 15px 40px;
+  border-radius: 8px;
+  font-size: 18px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 5px 15px rgba(252, 227, 0, 0.2);
+  transition: all 0.3s;
+}
+
+.btn-submit:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(252, 227, 0, 0.4);
+}
+
+.btn-submit:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.alert {
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 25px;
+  font-weight: 500;
+}
+
+.alert.error {
+  background: rgba(255, 68, 68, 0.1);
+  border: 1px solid #ff4444;
+  color: #ffaa44; /* bright error */
+}
+
+.alert.success {
+  background: rgba(0, 255, 136, 0.1);
+  border: 1px solid #00ff88;
+  color: #00ff88;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 80px 20px;
+  background: #151515;
+  border-radius: 12px;
+  border: 1px dashed #333;
+}
+
+.empty-icon {
+  font-size: 48px;
+  margin-bottom: 20px;
+}
+
+.empty-state h3 {
+  color: #fff;
+  margin-bottom: 10px;
+}
+
+.empty-state p {
+  color: #888;
+}
+
+.pieza-danada-label {
+  font-size: 14px;
+  line-height: 1.2;
+}
+
+.worklist-item input {
+  background: #2a2a2a;
+  border: 1px solid #444;
+  color: #fff;
+  padding: 10px;
+  border-radius: 6px;
+  outline: none;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.worklist-item input:focus {
+  border-color: #fce300;
+}
+
+@media (max-width: 1024px) {
+  .workspace-layout {
+    grid-template-columns: 1fr;
+  }
+}
