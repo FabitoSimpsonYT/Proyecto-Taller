@@ -183,6 +183,16 @@ function Reception() {
                   <p>{selectedBus.owner_name} ({selectedBus.owner_rut})</p>
                   <p>Tel: {selectedBus.owner_phone}</p>
                 </div>
+                {selectedBus.driver_name && (
+                  <>
+                    <hr />
+                    <div className="info-group">
+                      <label>Conductor</label>
+                      <p>{selectedBus.driver_name} {selectedBus.driver_rut ? `(${selectedBus.driver_rut})` : ''}</p>
+                      {selectedBus.driver_phone && <p>Tel: {selectedBus.driver_phone}</p>}
+                    </div>
+                  </>
+                )}
                 <hr />
                 <div className="info-group">
                   <label>Carrocería</label>
@@ -201,6 +211,19 @@ function Reception() {
                   <label>Reserva Original</label>
                   <p>{new Date(selectedBus.reservation_date).toLocaleString('es-CL')}</p>
                 </div>
+                {selectedBus.visual_details && selectedBus.visual_details.length > 0 && (
+                  <>
+                    <hr />
+                    <div className="info-group">
+                      <label style={{ color: '#fce300' }}>Detalles a Visualizar (Cliente)</label>
+                      <ul style={{ paddingLeft: '20px', margin: '5px 0' }}>
+                        {selectedBus.visual_details.map((detail, idx) => (
+                          <li key={idx} style={{ marginBottom: '5px' }}>{detail}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  </>
+                )}
               </aside>
 
               <div className="repair-form-panel">

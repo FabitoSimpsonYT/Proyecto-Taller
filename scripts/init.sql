@@ -28,6 +28,8 @@ CREATE TABLE IF NOT EXISTS buses (
     driver_name VARCHAR(100),
     driver_phone VARCHAR(20),
     
+    visual_details JSON, -- ['Espejo roto', 'Pintura lado izquierdo']
+    
     reservation_date DATETIME, -- Fecha y hora para la cual se reservó la atención
     status ENUM('pending', 'in_process', 'approved', 'rejected') DEFAULT 'pending',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP

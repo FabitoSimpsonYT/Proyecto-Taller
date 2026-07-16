@@ -51,6 +51,9 @@ const validateReservation = [
     if (!isValidRut(value)) throw new Error('RUT del chofer inválido');
     return true;
   }),
+  
+  // Detalles visuales opcionales
+  body('visual_details').optional().isArray().withMessage('Los detalles visuales deben ser un array'),
 
   // Middleware para retornar errores de validación
   (req, res, next) => {

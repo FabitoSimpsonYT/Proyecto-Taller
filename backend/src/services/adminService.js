@@ -20,6 +20,15 @@ const confirmAttendance = async (bus_id) => {
   return { message: 'Asistencia confirmada para el bus ' + bus.patente };
 };
 
+const markNoShow = async (bus_id) => {
+  const bus = await Bus.findByPk(bus_id);
+  if (!bus) throw { status: 404, message: 'Bus no encontrado' };
+  
+  bus.status = 'rejected';
+  await bus.save();
+  return { message: 'Inasistencia marcada para el bus ' + bus.patente };
+};
+
 const submitWorklist = async (userId, data) => {
   const { bus_id, items, exams_notes } = data;
   if (!bus_id || !items) throw { status: 400, message: 'Bus ID e Items son obligatorios' };
@@ -77,6 +86,7 @@ module.exports = {
   getAllBuses,
   getPendingBuses,
   confirmAttendance,
+  markNoShow,
   submitWorklist,
   submitRepair,
   getRepairs,

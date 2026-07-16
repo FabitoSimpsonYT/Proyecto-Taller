@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { API_URL } from '../utils/api';
+import Swal from 'sweetalert2';
 
 function LandingForm() {
   const navigate = useNavigate();
@@ -19,8 +20,24 @@ function LandingForm() {
     driver_name: '',
     driver_phone: '',
     reservation_date: '',
-    reservation_time: ''
+    reservation_time: '',
+    visual_details: []
   });
+  const [newDetail, setNewDetail] = useState('');
+
+  const handleAddDetail = (e) => {
+    e.preventDefault();
+    if (newDetail.trim() !== '') {
+      setFormData({ ...formData, visual_details: [...formData.visual_details, newDetail.trim()] });
+      setNewDetail('');
+    }
+  };
+
+  const handleRemoveDetail = (index) => {
+    const updatedDetails = [...formData.visual_details];
+    updatedDetails.splice(index, 1);
+    setFormData({ ...formData, visual_details: updatedDetails });
+  };
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [searchingClient, setSearchingClient] = useState(false);
@@ -84,7 +101,7 @@ function LandingForm() {
     }
 
     if (!validateRut(rut)) {
-      alert('Error: RUT inválido. El formato debe ser XXXXXXXX-X y ser un RUT chileno válido.');
+      Swal.fire('Error', 'RUT inválido. El formato debe ser XXXXXXXX-X y ser un RUT chileno válido.', 'error');
       return;
     }
 
@@ -156,17 +173,17 @@ function LandingForm() {
     // Validations
     const patenteRegex = /^([A-Z]{4}\d{2}|[A-Z]{2}\d{4})$/;
     if (!patenteRegex.test(formData.patente)) {
-      alert('Error: La patente debe tener formato XXXX11 o XX1111');
+      Swal.fire('Error', 'La patente debe tener formato XXXX11 o XX1111', 'error');
       return;
     }
 
     if (!validateRut(formData.owner_rut)) {
-      alert('Error: RUT del dueño inválido.');
+      Swal.fire('Error', 'RUT del dueño inválido.', 'error');
       return;
     }
 
     if (formData.driver_rut && !validateRut(formData.driver_rut)) {
-      alert('Error: RUT del chofer inválido.');
+      Swal.fire('Error', 'RUT del chofer inválido.', 'error');
       return;
     }
     
@@ -175,7 +192,7 @@ function LandingForm() {
     const maxYear = currentMonth >= 8 ? currentYear + 1 : currentYear;
     
     if (parseInt(formData.ano_fabricacion) > maxYear) {
-      alert(`Error: El año de fabricación no puede ser mayor a ${maxYear} (solo se permite el año siguiente a partir de septiembre)`);
+      Swal.fire('Error', `El año de fabricación no puede ser mayor a ${maxYear} (solo se permite el año siguiente a partir de septiembre)`, 'error');
       return;
     }
 
@@ -211,22 +228,21 @@ function LandingForm() {
           });
         }
       } else {
-        const error = await response.json();
-        let errorMessage = 'Error: ' + (error.error || 'Ocurrió un problema al procesar la solicitud');
+        const errorData = await response.json();
+        let errorMessage = 'Error: ' + (errorData.error || 'Ocurrió un problema al procesar la solicitud');
         
-        // Si el backend envía detalles (por las validaciones de express-validator)
-        if (error.details && Array.isArray(error.details)) {
+        if (errorData.details && Array.isArray(errorData.details)) {
           errorMessage += '\n\nPor favor corrige lo siguiente:\n';
-          error.details.forEach(detail => {
+          errorData.details.forEach(detail => {
             errorMessage += `- ${detail.msg}\n`;
           });
         }
         
-        alert(errorMessage);
+        Swal.fire('Error', errorMessage, 'error');
       }
     } catch (error) {
-      console.error('Error:', error);
-      alert('Error al conectar con el servidor');
+      console.error('Error reserving hour:', error);
+      Swal.fire('Error', 'Error al conectar con el servidor', 'error');
     } finally {
       setLoading(false);
     }
@@ -494,6 +510,38 @@ function LandingForm() {
               <label style={labelStyle}>Teléfono</label>
               <input type="text" name="driver_phone" value={formData.driver_phone} onChange={handleChange} style={inputStyle} />
             </div>
+          </div>
+
+          <h3 style={{ color: 'white', borderBottom: '1px solid rgba(255, 255, 255, 0.1)', paddingBottom: '15px', marginTop: '40px', fontSize: '20px', textTransform: 'uppercase', letterSpacing: '1px' }}>4. Detalles a Visualizar (Opcional)</h3>
+          <div>
+            <label style={labelStyle}>Agregar partes del vehículo, pintura u observaciones para el taller</label>
+            <div className="add-detail-container">
+              <input 
+                type="text" 
+                value={newDetail} 
+                onChange={(e) => setNewDetail(e.target.value)} 
+                style={inputStyle} 
+                placeholder="Ej: Revisar pintura lado izquierdo"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    handleAddDetail(e);
+                  }
+                }}
+              />
+              <button type="button" onClick={handleAddDetail} className="btn-add-detail">+ Añadir</button>
+            </div>
+            
+            {formData.visual_details.length > 0 && (
+              <div className="details-list">
+                {formData.visual_details.map((detail, index) => (
+                  <div key={index} className="detail-item">
+                    <span>{detail}</span>
+                    <button type="button" onClick={() => handleRemoveDetail(index)} className="btn-remove-detail">✕</button>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           <button type="submit" disabled={loading} style={{ width: '100%', marginTop: '40px', padding: '18px', background: 'linear-gradient(45deg, #fce300, #ffb300)', border: 'none', color: '#111', fontWeight: '900', fontSize: '18px', letterSpacing: '1px', textTransform: 'uppercase', borderRadius: '10px', cursor: loading ? 'not-allowed' : 'pointer', boxShadow: '0 8px 20px rgba(252, 227, 0, 0.4)', transition: 'transform 0.2s' }}>

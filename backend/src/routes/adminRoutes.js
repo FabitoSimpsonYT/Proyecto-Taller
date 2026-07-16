@@ -10,6 +10,9 @@ router.use(requireAdmin);
 router.get('/buses', adminController.getAllBuses);
 router.get('/inspections/pending', adminController.getPendingInspections);
 router.post('/inspections/confirm-attendance', adminController.confirmAttendanceAdmin);
+router.post('/inspections/mark-no-show', adminController.markNoShowAdmin);
+router.post('/confirm-attendance', adminController.confirmAttendanceAdmin); // Para compatibilidad con Dashboard
+router.post('/mark-no-show', adminController.markNoShowAdmin); // Para compatibilidad con Dashboard
 router.post('/inspections/worklist', adminController.submitWorklist);
 router.get('/inspections/:bus_id', adminController.getInspectionByBusId);
 router.post('/repairs', adminController.submitRepair);

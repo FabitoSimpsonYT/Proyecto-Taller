@@ -21,6 +21,13 @@ const confirmAttendanceAdmin = async (req, res, next) => {
   } catch (error) { next(error); }
 };
 
+const markNoShowAdmin = async (req, res, next) => {
+  try {
+    const result = await adminService.markNoShow(req.body.bus_id);
+    res.json(result);
+  } catch (error) { next(error); }
+};
+
 const submitWorklist = async (req, res, next) => {
   try {
     const result = await adminService.submitWorklist(req.user.id, req.body);
@@ -53,6 +60,7 @@ module.exports = {
   getAllBuses,
   getPendingInspections,
   confirmAttendanceAdmin,
+  markNoShowAdmin,
   submitWorklist,
   submitRepair,
   getRepairsByBusId,

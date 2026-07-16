@@ -18,6 +18,8 @@ const Bus = sequelize.define('Bus', {
   driver_name: { type: DataTypes.STRING },
   driver_phone: { type: DataTypes.STRING },
   
+  visual_details: { type: DataTypes.JSON },
+  
   reservation_date: { type: DataTypes.DATE },
   
   status: { type: DataTypes.ENUM('pending', 'in_process', 'approved', 'rejected'), defaultValue: 'pending' },

@@ -34,7 +34,6 @@ function Login() {
 
       <main className="seccion-principal auth-main">
         <div className="auth-card">
-          <div className="auth-badge">Acceso al taller</div>
           <h2>INICIAR SESIÓN</h2>
 
           <form onSubmit={handleLogin} className="auth-form">

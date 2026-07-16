@@ -8,15 +8,28 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Revisar si hay un token al cargar la aplicación
-    const token = localStorage.getItem('token');
-    const storedUser = localStorage.getItem('user');
-    
-    if (token && storedUser) {
-      setUser(JSON.parse(storedUser));
-      // Opcional: Podrías hacer un fetch al backend a /auth/me para validar el token
-    }
-    setLoading(false);
+    const checkSession = async () => {
+      const token = localStorage.getItem('token');
+      const storedUser = localStorage.getItem('user');
+      
+      if (token && storedUser) {
+        try {
+          // Validar el token con el backend (asumiendo que /auth/profile requiere token)
+          await api.get('/auth/profile');
+          // Si no hay error, el token es válido
+          setUser(JSON.parse(storedUser));
+        } catch (error) {
+          // Si da error (ej. backend apagado o token expirado), limpiamos la falsa sesión
+          console.error("Token inválido o backend inalcanzable. Cerrando sesión.");
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
+          setUser(null);
+        }
+      }
+      setLoading(false);
+    };
+
+    checkSession();
   }, []);
 
   const login = async (email, password) => {

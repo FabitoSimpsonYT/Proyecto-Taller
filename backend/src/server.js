@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const helmet = require('helmet');
 
 // Importar la conexión a la base de datos
 const sequelize = require('./config/database');
@@ -20,6 +21,7 @@ const corsOptions = {
   optionsSuccessStatus: 200
 };
 app.use(cors(corsOptions));
+app.use(helmet());
 app.use(express.json());
 
 // --- RUTAS ---

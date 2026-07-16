@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/Taller.css';
 import { useTaller } from '../hooks/useTaller';
+import Swal from 'sweetalert2';
 
 function Taller() {
   const navigate = useNavigate();
@@ -200,7 +201,7 @@ function Taller() {
                       onClick={(e) => {
                         // Validate manually before submitting as completed
                         if (!repairData.description.trim()) {
-                          alert('Por favor, ingresa el trabajo a realizar / observaciones.');
+                          Swal.fire('Atención', 'Por favor, ingresa el trabajo a realizar / observaciones.', 'warning');
                           return;
                         }
                         handleSubmitRepair(e, 'completed');
