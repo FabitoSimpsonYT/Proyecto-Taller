@@ -1,152 +1,298 @@
-/* ESTILOS BÁSICOS (CSS)
-   Aquí le damos color y forma a nuestra página web 
-*/
+/* ESTILOS MODERNOS DEL LANDING */
 
-/* 1. Todo el cuerpo de la página */
-body {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 0;
-  background-color: #1a1a1a;
-  /* Fondo oscuro inspirado en la referencia */
-  color: white;
-  /* Texto blanco en todo el documento */
-}
-
-/* 2. El encabezado negro de arriba */
-.encabezado {
-  background-color: #222222;
-  /* Negro */
-  color: white;
-  /* Letra blanca */
-  display: flex;
-  /* Esto sirve para poner elementos uno al lado del otro */
-  justify-content: space-between;
-  /* Separa el título a la izquierda y menú a la derecha */
-  align-items: center;
-  /* Centra los elementos de arriba a abajo */
-  padding: 10px 40px;
-  /* Espacio por dentro: arriba/abajo y lados */
-}
-
-/* Los enlaces de navegación (Inicio, Servicios, etc.) */
-.encabezado nav a {
-  color: white;
-  text-decoration: none;
-  /* Quita la rayita de abajo del enlace */
-  margin-left: 20px;
-  /* Separación entre cada enlace */
-}
-
-/* 3. La sección principal */
-.seccion-principal {
-  background-color: #111111;
-  /* Fondo muy oscuro estilo Fortnite */
-  padding: 60px 40px;
-  display: flex;
-  justify-content: center;
+.landing-page-container {
+  min-height: 100vh;
 }
 
 .seccion-principal-contenido {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
   align-items: center;
-  gap: 40px;
-  max-width: 1250px;
-  /* Ancho máximo para centrar el contenido */
+  gap: 42px;
+  max-width: 1280px;
   width: 100%;
 }
 
 .seccion-principal-imagen {
-  flex: 1;
-  max-width: 55%;
-  /* La imagen ocupa algo más de la mitad, como en la referencia */
+  max-width: 100%;
 }
 
 .imagen-con-degradado {
   width: 100%;
-  height: 480px;
-  /* Hacemos que sea más alta para que se vea bien el bus */
-  border-radius: 10px;
-  /* Bordes redondeados */
-  /* El degradado solicitado de blanco a negro en multiply para oscurecer la base de la tarjeta */
-  background-image: linear-gradient(to bottom, white 0%, black 100%), url('../assets/images/IMG_20241009_170719.jpg');
+  height: 520px;
+  border-radius: 24px;
+  background-image:
+    linear-gradient(160deg, rgba(255,255,255,0.22) 0%, rgba(0,0,0,0.4) 100%),
+    url('../assets/images/IMG_20241009_170719.jpg');
   background-size: cover;
   background-position: center;
-  background-blend-mode: multiply;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-  /* Sombrita para que resalte la tarjeta */
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.seccion-principal-texto {
+  max-width: 560px;
 }
 
 .seccion-principal-texto h2 {
-  font-size: 38px;
-  font-weight: 900;
-  font-style: italic;
-  margin-bottom: 20px;
+  font-size: clamp(2.2rem, 4.5vw, 4rem);
+  line-height: 1.02;
+  margin: 0 0 18px;
   text-transform: uppercase;
+  letter-spacing: 0.04em;
   color: #ffffff;
-  line-height: 1.1;
-  letter-spacing: 1px;
-  /* Estilo de título de Fortnite */
 }
 
 .seccion-principal-texto p {
-  font-size: 16px;
-  color: #a0a0a0;
-  /* Gris claro */
-  line-height: 1.6;
-  margin-bottom: 30px;
-  max-width: 500px;
+  font-size: 1.04rem;
+  color: #c3cad4;
+  line-height: 1.75;
+  margin: 0 0 28px;
 }
 
 .botones-accion {
   display: flex;
-  gap: 15px;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.boton-blanco,
+.boton-amarillo {
+  border: none;
+  border-radius: 999px;
+  padding: 14px 24px;
+  cursor: pointer;
+  font-weight: 900;
+  font-size: 0.96rem;
+  text-transform: uppercase;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.24);
+}
+
+.boton-blanco:hover,
+.boton-amarillo:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.04);
 }
 
 .boton-blanco {
-  background-color: #e0e0e0;
-  color: #111;
-  font-weight: 900;
-  padding: 12px 24px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 14px;
+  background: #ffffff;
+  color: #0f1115;
 }
 
 .boton-amarillo {
-  background-color: #fce300;
-  /* Amarillo estilo Fortnite */
+  background: linear-gradient(135deg, #fce300, #ffd500);
   color: #111;
+}
+
+.seccion-caracteristicas {
+  text-align: center;
+  padding: 90px 20px;
+  background-image:
+    linear-gradient(rgba(3, 4, 8, 0.7), rgba(3, 4, 8, 0.86)),
+    url('../assets/images/IMG_20241009_170745.jpg');
+  background-size: cover;
+  background-position: center;
+}
+
+.seccion-caracteristicas h2,
+.seccion-pasos h2,
+.seccion-precios h2 {
+  font-size: clamp(2rem, 3.8vw, 3.4rem);
   font-weight: 900;
-  padding: 12px 24px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 14px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-bottom: 18px;
+}
+
+.seccion-caracteristicas h2 {
+  color: #ffffff;
+}
+
+.lista-cajas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 24px;
+  max-width: 1240px;
+  margin: 36px auto 0;
+}
+
+.caja {
+  background: rgba(17, 17, 22, 0.84);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 22px;
+  padding: 28px 22px;
+  box-shadow: 0 14px 42px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(10px);
+  transition: transform 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+}
+
+.caja:hover,
+.caja.expandida {
+  transform: translateY(-6px);
+  border-color: rgba(252, 227, 0, 0.8);
+  background: rgba(24, 24, 30, 0.95);
+}
+
+.caja h3 {
+  font-size: 1.2rem;
+  margin: 8px 0 12px;
+  text-transform: uppercase;
+}
+
+.icono-ventaja {
+  width: 72px;
+  height: 72px;
+  border-radius: 18px;
+  display: grid;
+  place-items: center;
+  margin: 0 auto 18px;
+  font-size: 1.75rem;
+  color: #141414;
+  background: linear-gradient(135deg, #fce300, #ffec6f);
+  box-shadow: 0 10px 24px rgba(252, 227, 0, 0.24);
+}
+
+.caja p {
+  color: #bec6d1;
+  line-height: 1.6;
+}
+
+.detalles-caja {
+  list-style: none;
+  padding: 16px 0 0;
+  margin: 16px 0 0;
+  text-align: left;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.detalles-caja li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 10px;
+  color: #d9dde3;
+}
+
+.check-icon {
+  color: #fce300;
+  margin-top: 2px;
+}
+
+.seccion-pasos {
+  background: linear-gradient(180deg, #121317 0%, #1a1b21 100%);
+  padding: 88px 20px;
+  text-align: center;
+}
+
+.subtitulo-seccion {
+  color: #a5adb7;
+  margin-bottom: 30px;
+}
+
+.contenedor-pasos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.paso-card {
+  background: linear-gradient(180deg, rgba(21, 22, 28, 0.95), rgba(28, 29, 36, 0.95));
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  padding: 40px 22px;
+  position: relative;
+  text-align: center;
+  box-shadow: 0 16px 44px rgba(0, 0, 0, 0.22);
+}
+
+.paso-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(252, 227, 0, 0.85);
+}
+
+.numero-paso {
+  position: absolute;
+  top: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, #fce300, #ffde2b);
+  color: #121212;
+  font-weight: 900;
+}
+
+.icono-paso {
+  font-size: 2.4rem;
+  margin-bottom: 12px;
+  color: #fce300;
+}
+
+.paso-card h3 {
+  margin: 0 0 10px;
+  color: #ffffff;
+}
+
+.paso-card p {
+  color: #bcc4cf;
+  line-height: 1.7;
+}
+
+.pie-de-pagina {
+  background: linear-gradient(180deg, #22242a 0%, #17181d 100%);
+  padding: 34px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 22px;
+  flex-wrap: wrap;
+}
+
+.contacto-info p {
+  margin: 0;
+  color: #d6dae2;
+}
+
+.redes-sociales {
+  display: flex;
+  gap: 14px;
+}
+
+.redes-sociales a {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+  color: #fce300;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.redes-sociales a:hover {
+  background: rgba(252, 227, 0, 0.18);
+  transform: translateY(-2px);
+}
+
+.boton-whatsapp {
+  bottom: 28px;
+  right: 28px;
+  background: linear-gradient(135deg, #25d366, #1ebc5d);
 }
 
 @media (max-width: 900px) {
   .seccion-principal-contenido {
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .seccion-principal-imagen {
-    max-width: 100%;
-    margin-bottom: 20px;
+    grid-template-columns: 1fr;
   }
 
   .seccion-principal-texto {
     text-align: center;
-  }
-
-  .seccion-principal-texto h2 {
-    font-size: 28px;
-  }
-
-  .seccion-principal-texto p {
-    margin: 0 auto 30px;
   }
 
   .botones-accion {
@@ -154,415 +300,28 @@ body {
   }
 }
 
-/* 4. Sección de características (las 3 cajitas) */
-.seccion-caracteristicas {
-  text-align: center;
-  padding: 80px 20px;
-  /* Usando la segunda imagen de los buses */
-  background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.8)), url('../assets/images/IMG_20241009_170745.jpg');
-  background-size: cover;
-  background-position: center;
-  color: white;
-}
-
-.seccion-caracteristicas h2 {
-  font-size: 38px;
-  font-weight: 900;
-  font-style: italic;
-  margin-bottom: 20px;
-  text-transform: uppercase;
-  color: #ffffff;
-  letter-spacing: 1px;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8), 0 0 10px rgba(0, 0, 0, 0.5);
-}
-
-.lista-cajas {
-  display: flex;
-  /* Pone las cajas una al lado de la otra */
-  justify-content: center;
-  /* Las centra en la pantalla */
-  gap: 30px;
-  /* Espacio entre cada caja */
-  margin-top: 30px;
-}
-
-.caja {
-  background-color: rgba(17, 17, 17, 0.85);
-  /* Fondo oscuro semitransparente estilo el Hero */
-  border: 1px solid #333333;
-  /* Borde sutil oscuro */
-  border-radius: 10px;
-  padding: 30px 20px;
-  width: 280px;
-  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.5);
-  /* Sombrita más pronunciada */
-  color: #ffffff;
-  backdrop-filter: blur(5px);
-  /* Efecto cristal para que se vea elegante sobre el bus */
-  transition: all 0.3s ease;
-  /* Transición suave al expandirse */
-  display: flex;
-  flex-direction: column;
-}
-
-.caja:hover {
-  transform: translateY(-10px);
-  border-color: #fce300;
-  background-color: rgba(17, 17, 17, 0.95);
-  box-shadow: 0px 12px 24px rgba(0, 0, 0, 0.7);
-}
-
-.caja.expandida {
-  background-color: rgba(17, 17, 17, 0.95);
-  box-shadow: 0px 12px 24px rgba(0, 0, 0, 0.7);
-}
-
-.caja h3 {
-  font-size: 20px;
-  font-weight: 900;
-  margin-bottom: 15px;
-  color: #ffffff;
-  text-transform: uppercase;
-}
-
-.icono-ventaja {
-  font-size: 35px;
-  color: #fce300;
-  background-color: rgba(255, 255, 255, 0.05);
-  width: 70px;
-  height: 70px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 20px;
-  border: 1px solid rgba(252, 227, 0, 0.3);
-  transition: all 0.3s ease;
-}
-
-.caja:hover .icono-ventaja {
-  background-color: #fce300;
-  color: #111;
-  transform: scale(1.1);
-  border-color: #fce300;
-}
-
-.caja p {
-  color: #a0a0a0;
-  /* Gris claro como en la tarjeta superior */
-  line-height: 1.6;
-  flex-grow: 1;
-  /* Permite que el contenido empuje hacia abajo */
-}
-
-/* Nuevos estilos para la expasión */
-.detalles-caja {
-  list-style: none;
-  padding: 0;
-  margin: 15px 0 0 0;
-  text-align: left;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  padding-top: 15px;
-}
-
-.detalles-caja li {
-  color: #cccccc;
-  font-size: 14px;
-  margin-bottom: 10px;
-  line-height: 1.4;
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-}
-
-.check-icon {
-  color: #fce300;
-  /* Amarillo Fortnite para destacar el check */
-  margin-top: 2px;
-  flex-shrink: 0;
-}
-
-.boton-expandir {
-  background: none;
-  border: none;
-  color: #fce300;
-  font-weight: bold;
-  font-size: 14px;
-  cursor: pointer;
-  margin-top: 20px;
-  padding: 8px 0 0 0;
-  width: 100%;
-  text-align: center;
-  transition: color 0.3s;
-  border-top: 1px dashed rgba(255, 255, 255, 0.1);
-}
-
-.boton-expandir:hover {
-  color: #ffffff;
-}
-
-
-/* ----- NUEVA SECCIÓN: Cómo funciona ----- */
-.seccion-pasos {
-  background-color: #1a1a1a;
-  padding: 80px 20px;
-  text-align: center;
-}
-
-.seccion-pasos h2 {
-  font-size: 38px;
-  font-weight: 900;
-  font-style: italic;
-  text-transform: uppercase;
-  color: #fce300;
-  margin-bottom: 10px;
-  letter-spacing: 1px;
-}
-
-.subtitulo-seccion {
-  color: #a0a0a0;
-  margin-bottom: 50px;
-  font-size: 16px;
-}
-
-.contenedor-pasos {
-  display: flex;
-  justify-content: center;
-  gap: 30px;
-  max-width: 1200px;
-  margin: 0 auto;
-  flex-wrap: wrap;
-}
-
-.paso-card {
-  background-color: #222222;
-  border: 1px solid #333333;
-  border-radius: 12px;
-  padding: 40px 25px;
-  width: 300px;
-  position: relative;
-  text-align: center;
-  transition: transform 0.3s ease;
-}
-
-.paso-card:hover {
-  transform: translateY(-10px);
-  border-color: #fce300;
-}
-
-.numero-paso {
-  position: absolute;
-  top: -20px;
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: #fce300;
-  color: #111;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 900;
-  font-size: 20px;
-  box-shadow: 0 4px 10px rgba(252, 227, 0, 0.4);
-}
-
-.icono-paso {
-  font-size: 50px;
-  color: #ffffff;
-  margin-bottom: 20px;
-  margin-top: 10px;
-}
-
-.paso-card h3 {
-  font-size: 22px;
-  font-weight: bold;
-  margin-bottom: 15px;
-}
-
-.paso-card p {
-  color: #cccccc;
-  line-height: 1.5;
-  font-size: 15px;
-}
-
-/* ----- NUEVA SECCIÓN: Precios ----- */
-.seccion-precios {
-  background-color: #111111;
-  padding: 80px 20px;
-  text-align: center;
-  background-image: 
-    radial-gradient(circle at top right, rgba(255, 255, 255, 0.02), transparent 40%),
-    radial-gradient(circle at bottom left, rgba(255, 255, 255, 0.02), transparent 40%);
-}
-
-.seccion-precios h2 {
-  font-size: 38px;
-  font-weight: 900;
-  font-style: italic;
-  text-transform: uppercase;
-  color: #ffffff;
-  margin-bottom: 50px;
-  line-height: 1.2;
-}
-
-.tarjeta-precio {
-  background-color: #1a1a1a;
-  border: 1px solid #333333;
-  border-radius: 12px;
-  padding: 50px 40px;
-  max-width: 450px;
-  margin: 0 auto;
-  text-align: left;
-  transition: transform 0.3s ease, border-color 0.3s ease;
-}
-
-.tarjeta-precio:hover {
-  transform: translateY(-5px);
-  border-color: #fce300;
-}
-
-.tarjeta-precio h3 {
-  font-size: 24px;
-  margin-bottom: 15px;
-  color: #a0a0a0;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  text-align: center;
-}
-
-.precio-gratis {
-  font-size: 32px;
-  font-weight: 900;
-  color: #ffffff;
-  text-align: center;
-  margin-bottom: 15px;
-}
-
-.texto-pago-unico {
-  text-align: center;
-  color: #cccccc;
-  font-size: 15px;
-  margin-bottom: 30px;
-  padding-bottom: 30px;
-  border-bottom: 1px solid #333333;
-  line-height: 1.5;
-}
-
-.lista-beneficios-precio {
-  list-style: none;
-  padding: 0;
-  margin: 0 0 40px 0;
-}
-
-.lista-beneficios-precio li {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  color: #cccccc;
-  margin-bottom: 15px;
-  font-size: 16px;
-}
-
-.lista-beneficios-precio li svg {
-  color: #fce300;
-  flex-shrink: 0;
-}
-
-.ancho-completo {
-  width: 100%;
-  font-size: 16px;
-  padding: 15px;
-}
-
-
-/* 5. El pie de página gris oscuro de hasta abajo */
-.pie-de-pagina {
-  background-color: #333333;
-  color: white;
-  padding: 40px 20px;
-  margin-top: 60px;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 20px;
-}
-
-.contacto-info p {
-  margin: 5px 0;
-  text-align: left;
-}
-
-.redes-sociales {
-  display: flex;
-  gap: 20px;
-}
-
-.redes-sociales a {
-  color: #fce300;
-  text-decoration: none;
-  font-weight: bold;
-  font-size: 26px;
-  /* Aumenta el tamaño para que el SVG quede nítido */
-  transition: all 0.3s ease;
-}
-
-.redes-sociales a:hover {
-  color: #ffffff;
-  transform: translateY(-2px);
-  /* Pequeño salto animado */
-}
-
-/* 6. Botón de WhatsApp Flotante */
-.boton-whatsapp {
-  position: fixed;
-  bottom: 30px;
-  right: 30px;
-  background-color: #25d366; /* Verde oficial WhatsApp */
-  color: white;
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 35px;
-  box-shadow: 2px 5px 15px rgba(0, 0, 0, 0.3);
-  z-index: 1000;
-  text-decoration: none;
-  transition: all 0.3s ease;
-  animation: pulso-wa 2s infinite;
-}
-
-.boton-whatsapp:hover {
-  transform: scale(1.1);
-  background-color: #128c7e;
-  box-shadow: 2px 8px 20px rgba(0, 0, 0, 0.4);
-}
-
-@keyframes pulso-wa {
-  0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7); }
-  70% { box-shadow: 0 0 0 15px rgba(37, 211, 102, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
-}
-
 @media (max-width: 600px) {
+  .encabezado {
+    padding: 12px 16px;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .encabezado nav {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .seccion-principal {
+    padding: 48px 16px 36px;
+  }
+
+  .imagen-con-degradado {
+    height: 340px;
+  }
+
   .pie-de-pagina {
     flex-direction: column;
     text-align: center;
-  }
-
-  .contacto-info p {
-    text-align: center;
-  }
-
-  .boton-whatsapp {
-    bottom: 20px;
-    right: 20px;
-    width: 50px;
-    height: 50px;
-    font-size: 30px;
   }
 }
