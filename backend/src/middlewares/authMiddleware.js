@@ -22,7 +22,15 @@ const requireAdmin = (req, res, next) => {
   next();
 };
 
+const requireMecanico = (req, res, next) => {
+  if (req.user.role !== 'mecanico' && req.user.role !== 'admin') {
+    return res.status(403).json({ error: 'Acceso denegado. Se requiere rol de mecánico.' });
+  }
+  next();
+};
+
 module.exports = {
   authenticateToken,
-  requireAdmin
+  requireAdmin,
+  requireMecanico
 };

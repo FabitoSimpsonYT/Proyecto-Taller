@@ -1,54 +1,28 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/Dashboard.css';
-import { API_URL } from '../utils/api';
+import api from '../services/api';
+import { AuthContext } from '../context/AuthContext';
 
 function Dashboard({ handleLogout }) {
   const navigate = useNavigate();
-  const [userProfile, setUserProfile] = useState(null);
+  const { user: userProfile } = useContext(AuthContext);
   const [buses, setBuses] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState('menu'); // 'menu', 'pending'
-  const token = localStorage.getItem('token');
+  const [loadingBuses, setLoadingBuses] = useState(true);
+  const [activeTab, setActiveTab] = useState('menu');
 
   useEffect(() => {
-    fetchUserProfile();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    fetchBuses();
   }, []);
-
-  const fetchUserProfile = async () => {
-    try {
-      const response = await fetch(`${API_URL}/api/auth/profile`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-
-      if (response.ok) {
-        const user = await response.json();
-        setUserProfile(user);
-        await fetchBuses();
-      } else {
-        handleLogout();
-        navigate('/login');
-      }
-    } catch (error) {
-      console.error('Error fetching profile:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const fetchBuses = async () => {
     try {
-      const response = await fetch(`${API_URL}/api/admin/buses`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setBuses(data);
-      }
+      const response = await api.get('/admin/buses');
+      setBuses(response.data);
     } catch (error) {
       console.error('Error fetching buses:', error);
+    } finally {
+      setLoadingBuses(false);
     }
   };
 
@@ -56,8 +30,8 @@ function Dashboard({ handleLogout }) {
   const inProcessBuses = buses.filter(b => b.status === 'in_process');
   const inTallerBuses = buses.filter(b => ['approved', 'rejected'].includes(b.status));
 
-  if (loading) {
-    return <div className="dashboard-container"><p>Cargando...</p></div>;
+  if (loadingBuses) {
+    return <div className="dashboard-container"><p>Cargando datos del taller...</p></div>;
   }
 
   return (
@@ -67,8 +41,8 @@ function Dashboard({ handleLogout }) {
           <h1>Panel de Control - Arréglame la Máquina</h1>
           <div className="user-info">
             <span>{userProfile?.name}</span>
-            <span className={`role ${userProfile?.role}`}>{userProfile?.role === 'admin' ? 'Administrador' : 'Usuario'}</span>
-            <button onClick={() => { handleLogout(); navigate('/login'); }} className="logout-btn">
+            <span className={`role ${userProfile?.role}`}>{userProfile?.role === 'admin' ? 'Administrador' : 'Mecánico'}</span>
+            <button onClick={handleLogout} className="logout-btn">
               Cerrar Sesión
             </button>
           </div>
@@ -129,7 +103,7 @@ function Dashboard({ handleLogout }) {
           )}
 
           {activeTab === 'pending' && (
-            <AdminPending buses={pendingBuses} token={token} onUpdate={fetchBuses} navigate={navigate} />
+            <AdminPending buses={pendingBuses} onUpdate={fetchBuses} navigate={navigate} />
           )}
         </main>
       </div>
@@ -137,23 +111,13 @@ function Dashboard({ handleLogout }) {
   );
 }
 
-function AdminPending({ buses, token, onUpdate, navigate }) {
+function AdminPending({ buses, onUpdate, navigate }) {
   const confirmAttendance = async (busId) => {
     try {
-      const response = await fetch(`${API_URL}/api/inspections/confirm-attendance`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({ bus_id: busId })
-      });
-
-      if (response.ok) {
-        alert('Asistencia confirmada. Redirigiendo al checklist de recepción...');
-        onUpdate();
-        navigate('/recepcion');
-      }
+      await api.post('/admin/confirm-attendance', { bus_id: busId });
+      alert('Asistencia confirmada. Redirigiendo al checklist de recepción...');
+      onUpdate();
+      navigate('/recepcion');
     } catch (error) {
       console.error('Error confirming attendance:', error);
     }

@@ -1,226 +1,31 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/Taller.css';
-import { API_URL } from '../utils/api';
+import { useTaller } from '../hooks/useTaller';
 
-function Taller({ handleLogout }) {
+function Taller() {
   const navigate = useNavigate();
-  const [buses, setBuses] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [selectedBus, setSelectedBus] = useState(null);
-  const [userProfile, setUserProfile] = useState(null);
-  const [submitStatus, setSubmitStatus] = useState({ loading: false, error: null, success: null });
-  
-  const token = localStorage.getItem('token');
+  const {
+    userProfile,
+    logout,
+    buses,
+    loading,
+    selectedBus,
+    setSelectedBus,
+    submitStatus,
+    repairData,
+    setRepairData,
+    initialDiagnosis,
+    handleSelectBus,
+    handleAddRepuesto,
+    handleRepuestoChange,
+    handleRemoveRepuesto,
+    handleSubmitRepair,
+    handleExitWithoutRepairs,
+    busHistory
+  } = useTaller();
 
-  const [repairData, setRepairData] = useState({
-    bus_id: '',
-    description: '',
-    repuestos_utilizados: [{ repuesto: '', cantidad: 1, costo: 0 }],
-    status: 'in_progress'
-  });
-  
-  const [initialDiagnosis, setInitialDiagnosis] = useState(null);
-
-  useEffect(() => {
-    fetchUserProfile();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const fetchUserProfile = async () => {
-    try {
-      const response = await fetch(`${API_URL}/api/auth/profile`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-
-      if (response.ok) {
-        const user = await response.json();
-        setUserProfile(user);
-        await fetchBuses();
-      } else {
-        handleLogout();
-      }
-    } catch (error) {
-      console.error('Error fetching profile:', error);
-      handleLogout();
-    }
-  };
-
-  const fetchBuses = async () => {
-    setLoading(true);
-    try {
-      const response = await fetch(`${API_URL}/api/admin/buses`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setBuses(data.filter(b => ['approved', 'rejected'].includes(b.status)));
-      }
-    } catch (error) {
-      console.error('Error fetching buses:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleSelectBus = async (bus) => {
-    setSelectedBus(bus);
-    setSubmitStatus({ loading: false, error: null, success: null });
-    setRepairData({
-      bus_id: bus.id,
-      description: '',
-      repuestos_utilizados: [{ repuesto: '', cantidad: 1, costo: 0 }],
-      status: 'in_progress'
-    });
-    setInitialDiagnosis(null);
-    
-    try {
-      const res = await fetch(`${API_URL}/api/admin/inspections/${bus.id}`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      if (res.ok) {
-        const data = await res.json();
-        
-        // Parse JSON fields if MariaDB returns them as strings
-        if (typeof data.items === 'string') {
-          try { data.items = JSON.parse(data.items); } catch(e){}
-        }
-        if (typeof data.partes_3d_danadas === 'string') {
-          try { data.partes_3d_danadas = JSON.parse(data.partes_3d_danadas); } catch(e){}
-        }
-
-        setInitialDiagnosis(data);
-        
-        let initialRepuestos = [];
-        
-        if (data.items && Array.isArray(data.items)) {
-          data.items.forEach(it => {
-            if (it.status === 'fail') {
-              initialRepuestos.push({ pieza_danada: it.item_name, repuesto: '', cantidad: 1, costo: 0 });
-            }
-          });
-        }
-        
-        if (data.partes_3d_danadas && Array.isArray(data.partes_3d_danadas)) {
-          data.partes_3d_danadas.forEach(part => {
-            if (!initialRepuestos.find(r => r.pieza_danada === part)) {
-              initialRepuestos.push({ pieza_danada: part, repuesto: '', cantidad: 1, costo: 0 });
-            }
-          });
-        }
-        
-        if (initialRepuestos.length === 0) {
-          initialRepuestos.push({ pieza_danada: 'Adicional', repuesto: '', cantidad: 1, costo: 0 });
-        }
-        
-        setRepairData(prev => ({
-          ...prev,
-          repuestos_utilizados: initialRepuestos
-        }));
-      }
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
-  const handleAddRepuesto = () => {
-    setRepairData({
-      ...repairData,
-      repuestos_utilizados: [...repairData.repuestos_utilizados, { pieza_danada: 'Adicional', repuesto: '', cantidad: 1, costo: 0 }]
-    });
-  };
-
-  const handleRepuestoChange = (index, field, value) => {
-    const newReps = [...repairData.repuestos_utilizados];
-    newReps[index][field] = value;
-    setRepairData({ ...repairData, repuestos_utilizados: newReps });
-  };
-
-  const handleRemoveRepuesto = (index) => {
-    const newReps = repairData.repuestos_utilizados.filter((_, i) => i !== index);
-    setRepairData({ ...repairData, repuestos_utilizados: newReps });
-  };
-
-  const handleSubmitRepair = async (e, finalStatus = 'in_progress') => {
-    e.preventDefault();
-    if (!repairData.bus_id) return;
-
-    setSubmitStatus({ loading: true, error: null, success: null });
-    
-    try {
-      const response = await fetch(`${API_URL}/api/admin/repairs`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          ...repairData,
-          repuestos_utilizados: repairData.repuestos_utilizados.map(r => ({
-            repuesto: r.pieza_danada && r.pieza_danada !== 'Adicional' ? `[Para ${r.pieza_danada}] ${r.repuesto}` : r.repuesto,
-            cantidad: r.cantidad,
-            costo: r.costo
-          })),
-          status: finalStatus
-        })
-      });
-
-      if (response.ok) {
-        setSubmitStatus({ loading: false, error: null, success: 'Reparación guardada exitosamente.' });
-        setTimeout(() => {
-          setSelectedBus(null);
-          fetchBuses();
-        }, 2000);
-      } else {
-        const err = await response.json();
-        setSubmitStatus({ loading: false, error: err.error || 'Error al guardar reparación', success: null });
-      }
-    } catch (error) {
-      console.error('Error submitting repair:', error);
-      setSubmitStatus({ loading: false, error: 'Error de conexión con el servidor.', success: null });
-    }
-  };
-
-  const handleExitWithoutRepairs = async () => {
-    if (!repairData.bus_id) return;
-    
-    if (!window.confirm('¿Estás seguro de autorizar la salida sin registrar ninguna reparación?')) {
-      return;
-    }
-
-    setSubmitStatus({ loading: true, error: null, success: null });
-    
-    try {
-      const response = await fetch(`${API_URL}/api/admin/repairs`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          bus_id: repairData.bus_id,
-          description: 'Salida autorizada sin reparaciones.',
-          repuestos_utilizados: [],
-          status: 'completed'
-        })
-      });
-
-      if (response.ok) {
-        setSubmitStatus({ loading: false, error: null, success: 'Salida autorizada exitosamente.' });
-        setTimeout(() => {
-          setSelectedBus(null);
-          fetchBuses();
-        }, 2000);
-      } else {
-        const err = await response.json();
-        setSubmitStatus({ loading: false, error: err.error || 'Error al autorizar salida', success: null });
-      }
-    } catch (error) {
-      console.error('Error exiting without repairs:', error);
-      setSubmitStatus({ loading: false, error: 'Error de conexión con el servidor.', success: null });
-    }
-  };
+  const [showHistory, setShowHistory] = useState(false);
 
   return (
     <div className="taller-container">
@@ -279,6 +84,9 @@ function Taller({ handleLogout }) {
                 ✕ Cancelar Revisión
               </button>
               <h2>Worklist: Piezas a Cambiar en <span className="patente-highlight">{selectedBus.patente}</span></h2>
+              <button className="btn-history" onClick={() => setShowHistory(true)} style={{ marginLeft: 'auto', background: '#333', color: '#fff', border: '1px solid #555', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer' }}>
+                Ver Historial
+              </button>
             </div>
             
             <div className="workspace-layout">
@@ -306,9 +114,6 @@ function Taller({ handleLogout }) {
                         <li key={i}>{it.item_name}: {it.status === 'pass' ? '✅' : it.status === 'fail' ? '❌' : '⏳'}</li>
                       ))}
                     </ul>
-                    {initialDiagnosis.partes_3d_danadas && Array.isArray(initialDiagnosis.partes_3d_danadas) && initialDiagnosis.partes_3d_danadas.length > 0 && (
-                       <p style={{ color: '#ff4444', fontSize: '12px', marginTop: '10px' }}>Partes dañadas: {initialDiagnosis.partes_3d_danadas.join(', ')}</p>
-                    )}
                     {initialDiagnosis.exams_notes && (
                       <p style={{ color: '#aaa', fontSize: '12px', marginTop: '10px', fontStyle: 'italic' }}>"{initialDiagnosis.exams_notes}"</p>
                     )}
@@ -420,6 +225,48 @@ function Taller({ handleLogout }) {
           </div>
         )}
       </main>
+
+      {showHistory && (
+        <div className="history-modal-overlay" onClick={() => setShowHistory(false)}>
+          <div className="history-modal-content" onClick={e => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2>Historial de Reparaciones - {selectedBus?.patente}</h2>
+              <button className="btn-close" onClick={() => setShowHistory(false)}>✕</button>
+            </div>
+            <div className="modal-body">
+              {busHistory.length === 0 ? (
+                <p style={{ color: '#aaa' }}>No hay reparaciones previas registradas para esta máquina.</p>
+              ) : (
+                busHistory.map(record => (
+                  <div key={record.id} className="history-record">
+                    <div className="history-record-header">
+                      <strong>Fecha:</strong> {new Date(record.repair_date).toLocaleDateString()} a las {new Date(record.repair_date).toLocaleTimeString()}
+                      <span className={`status-badge ${record.status}`}>{record.status === 'completed' ? 'Completado' : 'En Proceso'}</span>
+                    </div>
+                    <div className="history-record-mechanic">
+                      <strong>Mecánico:</strong> {record.Mechanic ? record.Mechanic.name : `ID: ${record.mechanic_id}`}
+                    </div>
+                    <div className="history-record-desc">
+                      <strong>Trabajo realizado:</strong>
+                      <p>{record.description}</p>
+                    </div>
+                    {record.repuestos_utilizados && record.repuestos_utilizados.length > 0 && (
+                      <div className="history-record-parts">
+                        <strong>Repuestos:</strong>
+                        <ul>
+                          {record.repuestos_utilizados.map((r, idx) => (
+                            <li key={idx}>- {r.cantidad}x {r.repuesto} (${r.costo})</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

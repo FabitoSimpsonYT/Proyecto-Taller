@@ -17,7 +17,6 @@ function Reception() {
   const [worklist, setWorklist] = useState([]);
   const [newItemName, setNewItemName] = useState('');
   const [notes, setNotes] = useState('');
-  const [damagedParts, setDamagedParts] = useState([]);
 
   useEffect(() => {
     fetchUserProfile();
@@ -67,7 +66,6 @@ function Reception() {
     setWorklist([]);
     setNewItemName('');
     setNotes('');
-    setDamagedParts([]);
   };
 
   const handleAddItem = () => {
@@ -98,7 +96,6 @@ function Reception() {
         body: JSON.stringify({
           bus_id: selectedBus.id,
           items: itemsArray,
-          partes_3d_danadas: damagedParts,
           exams_notes: notes
         })
       });
@@ -243,13 +240,6 @@ function Reception() {
                       <button type="button" onClick={handleAddItem} style={{ padding: '10px 20px', background: '#4CAF50', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer', fontWeight: 'bold' }}>
                         + Añadir
                       </button>
-                    </div>
-                  </div>
-
-                  <div className="form-group" style={{ marginTop: '30px' }}>
-                    <label>Modelo 3D (Daños Estructurales)</label>
-                    <div style={{ padding: '20px', textAlign: 'center', backgroundColor: '#333', color: '#fff', borderRadius: '10px', marginTop: '10px' }}>
-                      <p>El modelo 3D interactivo ha sido deshabilitado temporalmente.</p>
                     </div>
                   </div>
 

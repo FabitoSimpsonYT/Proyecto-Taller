@@ -1,48 +1,65 @@
-/* ESTILOS BÁSICOS (CSS)
-   Aquí le damos color y forma a nuestra página web 
-*/
+/* ESTILOS GLOBALES MODERNOS */
 
-/* 1. Todo el cuerpo de la página */
+* {
+  box-sizing: border-box;
+}
+
 body {
-  font-family: Arial, sans-serif;
+  font-family: Inter, "Segoe UI", Arial, sans-serif;
   margin: 0;
   padding: 0;
-  background-color: #1a1a1a;
-  /* Fondo oscuro inspirado en la referencia */
-  color: white;
-  /* Texto blanco en todo el documento */
+  background:
+    radial-gradient(circle at top left, rgba(252, 227, 0, 0.12), transparent 20%),
+    radial-gradient(circle at top right, rgba(255, 255, 255, 0.06), transparent 28%),
+    linear-gradient(135deg, #0b0b0d 0%, #14151a 45%, #0f1014 100%);
+  color: #f5f7fa;
 }
 
-/* 2. El encabezado negro de arriba */
+button,
+input {
+  font: inherit;
+}
+
 .encabezado {
-  background-color: #222222;
-  /* Negro */
-  color: white;
-  /* Letra blanca */
+  position: sticky;
+  top: 0;
+  z-index: 20;
   display: flex;
-  /* Esto sirve para poner elementos uno al lado del otro */
   justify-content: space-between;
-  /* Separa el título a la izquierda y menú a la derecha */
   align-items: center;
-  /* Centra los elementos de arriba a abajo */
-  padding: 10px 40px;
-  /* Espacio por dentro: arriba/abajo y lados */
+  padding: 14px 28px;
+  background: rgba(16, 16, 20, 0.82);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-/* Los enlaces de navegación (Inicio, Servicios, etc.) */
+.encabezado h1 {
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.encabezado nav {
+  display: flex;
+  gap: 18px;
+  align-items: center;
+}
+
 .encabezado nav a {
-  color: white;
   text-decoration: none;
-  /* Quita la rayita de abajo del enlace */
-  margin-left: 20px;
-  /* Separación entre cada enlace */
+  color: #d2d7df;
+  font-weight: 700;
+  transition: color 0.2s ease;
 }
 
-/* 3. La sección principal */
+.encabezado nav a:hover {
+  color: #fce300;
+}
+
 .seccion-principal {
-  background-color: #111111;
-  /* Fondo muy oscuro estilo Fortnite */
-  padding: 60px 40px;
+  padding: 72px 32px 56px;
   display: flex;
   justify-content: center;
 }

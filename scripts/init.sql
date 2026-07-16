@@ -38,8 +38,7 @@ CREATE TABLE IF NOT EXISTS inspections (
     id INT AUTO_INCREMENT PRIMARY KEY,
     bus_id INT NOT NULL,
     inspector_id INT NOT NULL, -- El admin que realizó la inspección
-    items JSON NOT NULL, -- [{ item_name: 'Frenos', status: 'pass'|'fail'|'pending' }]
-    partes_3d_danadas JSON, -- [{ part_id: 'front_bumper', description: 'Roto' }]
+    items JSON NOT NULL, -- [{ item_name: 'Luces', status: 'pass'|'fail'|'pending' }]
     exams_notes TEXT,
     inspection_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (bus_id) REFERENCES buses(id) ON DELETE CASCADE,
