@@ -11,15 +11,15 @@ const loginLimiter = rateLimit({
   message: { error: 'Demasiados intentos de inicio de sesión, intenta en 15 minutos' }
 });
 
-router.post('/login', 
+router.post('/iniciar-sesion', 
   loginLimiter,
   [
-    body('email').isEmail().withMessage('Debe ser un email válido').normalizeEmail(),
-    body('password').isString().isLength({ min: 6 }).withMessage('Contraseña inválida')
+    body('correo').isEmail().withMessage('Debe ser un correo válido').normalizeEmail(),
+    body('contrasena').isString().isLength({ min: 6 }).withMessage('Contraseña inválida')
   ],
-  authController.login
+  authController.iniciarSesion
 );
-router.post('/register', authenticateToken, requireAdmin, authController.register);
-router.get('/profile', authenticateToken, authController.getProfile);
+router.post('/registrar', authenticateToken, requireAdmin, authController.registrar);
+router.get('/perfil', authenticateToken, authController.obtenerPerfil);
 
 module.exports = router;

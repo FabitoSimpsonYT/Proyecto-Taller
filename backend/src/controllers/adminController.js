@@ -1,68 +1,68 @@
 const adminService = require('../services/adminService');
 
-const getAllBuses = async (req, res, next) => {
+const obtenerTodosLosBuses = async (req, res, next) => {
   try {
-    const result = await adminService.getAllBuses();
+    const result = await adminService.obtenerTodosLosBuses();
     res.json(result);
   } catch (error) { next(error); }
 };
 
-const getPendingInspections = async (req, res, next) => {
+const obtenerReservasPendientes = async (req, res, next) => {
   try {
-    const result = await adminService.getPendingBuses();
+    const result = await adminService.obtenerReservasPendientes();
     res.json(result);
   } catch (error) { next(error); }
 };
 
-const confirmAttendanceAdmin = async (req, res, next) => {
+const confirmarAsistenciaAdmin = async (req, res, next) => {
   try {
-    const result = await adminService.confirmAttendance(req.body.bus_id);
+    const result = await adminService.confirmarAsistencia(req.body.bus_id);
     res.json(result);
   } catch (error) { next(error); }
 };
 
-const markNoShowAdmin = async (req, res, next) => {
+const marcarInasistenciaAdmin = async (req, res, next) => {
   try {
-    const result = await adminService.markNoShow(req.body.bus_id);
+    const result = await adminService.marcarInasistencia(req.body.bus_id);
     res.json(result);
   } catch (error) { next(error); }
 };
 
-const submitWorklist = async (req, res, next) => {
+const enviarInspeccion = async (req, res, next) => {
   try {
-    const result = await adminService.submitWorklist(req.user.id, req.body);
+    const result = await adminService.enviarInspeccion(req.user.id, req.body);
     res.status(201).json(result);
   } catch (error) { next(error); }
 };
 
-const submitRepair = async (req, res, next) => {
+const enviarReparacion = async (req, res, next) => {
   try {
-    const result = await adminService.submitRepair(req.user.id, req.body);
+    const result = await adminService.enviarReparacion(req.user.id, req.body);
     res.status(201).json(result);
   } catch (error) { next(error); }
 };
 
-const getRepairsByBusId = async (req, res, next) => {
+const obtenerReparacionesPorBusId = async (req, res, next) => {
   try {
-    const result = await adminService.getRepairs(req.params.bus_id);
+    const result = await adminService.obtenerReparaciones(req.params.bus_id);
     res.json(result);
   } catch (error) { next(error); }
 };
 
-const getInspectionByBusId = async (req, res, next) => {
+const obtenerInspeccionPorBusId = async (req, res, next) => {
   try {
-    const result = await adminService.getInspection(req.params.bus_id);
+    const result = await adminService.obtenerInspeccion(req.params.bus_id);
     res.json(result);
   } catch (error) { next(error); }
 };
 
 module.exports = {
-  getAllBuses,
-  getPendingInspections,
-  confirmAttendanceAdmin,
-  markNoShowAdmin,
-  submitWorklist,
-  submitRepair,
-  getRepairsByBusId,
-  getInspectionByBusId
+  obtenerTodosLosBuses,
+  obtenerReservasPendientes,
+  confirmarAsistenciaAdmin,
+  marcarInasistenciaAdmin,
+  enviarInspeccion,
+  enviarReparacion,
+  obtenerReparacionesPorBusId,
+  obtenerInspeccionPorBusId
 };

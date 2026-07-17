@@ -4,62 +4,62 @@ import api from '../services/api';
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [usuario, setUsuario] = useState(null);
+  const [cargando, setCargando] = useState(true);
 
   useEffect(() => {
-    const checkSession = async () => {
+    const verificarSesion = async () => {
       const token = localStorage.getItem('token');
-      const storedUser = localStorage.getItem('user');
+      const usuarioGuardado = localStorage.getItem('usuario');
       
-      if (token && storedUser) {
+      if (token && usuarioGuardado) {
         try {
-          // Validar el token con el backend (asumiendo que /auth/profile requiere token)
-          await api.get('/auth/profile');
+          // Validar el token con el backend (asumiendo que /auth/perfil requiere token)
+          await api.get('/auth/perfil');
           // Si no hay error, el token es válido
-          setUser(JSON.parse(storedUser));
+          setUsuario(JSON.parse(usuarioGuardado));
         } catch (error) {
           // Si da error (ej. backend apagado o token expirado), limpiamos la falsa sesión
           console.error("Token inválido o backend inalcanzable. Cerrando sesión.");
           localStorage.removeItem('token');
-          localStorage.removeItem('user');
-          setUser(null);
+          localStorage.removeItem('usuario');
+          setUsuario(null);
         }
       }
-      setLoading(false);
+      setCargando(false);
     };
 
-    checkSession();
+    verificarSesion();
   }, []);
 
-  const login = async (email, password) => {
+  const iniciarSesion = async (correo, contrasena) => {
     try {
-      const response = await api.post('/auth/login', { email, password });
-      const { token, user } = response.data;
+      const response = await api.post('/auth/iniciar-sesion', { correo, contrasena });
+      const { token, usuario: nuevoUsuario } = response.data;
       
       localStorage.setItem('token', token);
-      localStorage.setItem('user', JSON.stringify(user));
+      localStorage.setItem('usuario', JSON.stringify(nuevoUsuario));
       
-      setUser(user);
-      return { success: true };
+      setUsuario(nuevoUsuario);
+      return { exito: true };
     } catch (error) {
       console.error("Error en login", error);
       return { 
-        success: false, 
-        message: error.response?.data?.error || 'Error al iniciar sesión' 
+        exito: false, 
+        mensaje: error.response?.data?.error || 'Error al iniciar sesión' 
       };
     }
   };
 
-  const logout = () => {
+  const cerrarSesion = () => {
     localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    setUser(null);
+    localStorage.removeItem('usuario');
+    setUsuario(null);
     window.location.href = '/'; 
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout }}>
+    <AuthContext.Provider value={{ usuario, cargando, iniciarSesion, cerrarSesion }}>
       {children}
     </AuthContext.Provider>
   );

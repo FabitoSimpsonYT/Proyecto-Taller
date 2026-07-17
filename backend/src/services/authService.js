@@ -1,58 +1,59 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { User } = require('../entities/index.entities');
+const { Usuario } = require('../entities/index.entities');
 
 const JWT_SECRET = process.env.JWT_SECRET || 'super_secret_key_123';
 
-const loginUser = async (email, password) => {
-  const user = await User.findOne({ where: { email } });
+const iniciarSesionUsuario = async (correo, contrasena) => {
+  const usuario = await Usuario.findOne({ where: { correo } });
   
-  if (!user) {
+  if (!usuario) {
     // Mitigación de timing attack: procesamos un hash simulado para igualar los tiempos de respuesta
-    await bcrypt.compare(password, '$2a$10$dummyHashToMatchTheLengthOfARealHash123456789012345678');
-    throw { status: 401, message: 'el email o la contraseña son incorrectos' };
+    await bcrypt.compare(contrasena, '$2a$10$dummyHashToMatchTheLengthOfARealHash123456789012345678');
+    throw { status: 401, message: 'el correo o la contraseña son incorrectos' };
   }
 
-  const isPasswordValid = await bcrypt.compare(password, user.password);
-  if (!isPasswordValid) throw { status: 401, message: 'el email o la contraseña son incorrectos' };
+  const esContrasenaValida = await bcrypt.compare(contrasena, usuario.contrasena);
+  if (!esContrasenaValida) throw { status: 401, message: 'el correo o la contraseña son incorrectos' };
 
   const token = jwt.sign(
-    { id: user.id, email: user.email, role: user.role },
+    { id: usuario.id, correo: usuario.correo, rol: usuario.rol },
     JWT_SECRET,
     { expiresIn: '24h' }
   );
 
-  return { token, user: { id: user.id, email: user.email, name: user.full_name, role: user.role } };
+  return { token, usuario: { id: usuario.id, correo: usuario.correo, nombre: usuario.nombre_completo, rol: usuario.rol } };
 };
 
-const getUserProfile = async (userId) => {
-  const user = await User.findByPk(userId, {
-    attributes: { exclude: ['password'] }
+const obtenerPerfilUsuario = async (usuarioId) => {
+  const usuario = await Usuario.findByPk(usuarioId, {
+    attributes: { exclude: ['contrasena'] }
   });
   
-  if (!user) throw { status: 404, message: 'Usuario no encontrado' };
+  if (!usuario) throw { status: 404, message: 'Usuario no encontrado' };
   
-  return { ...user.toJSON(), name: user.full_name };
+  return { ...usuario.toJSON(), nombre: usuario.nombre_completo };
 };
 
-const registerUser = async (full_name, email, password, role) => {
-  const existingUser = await User.findOne({ where: { email } });
-  if (existingUser) throw { status: 400, message: 'El correo ya está registrado' };
+const registrarUsuario = async (nombre_completo, rut, correo, contrasena, rol) => {
+  const usuarioExistente = await Usuario.findOne({ where: { correo } });
+  if (usuarioExistente) throw { status: 400, message: 'El correo ya está registrado' };
 
-  const hashedPassword = await bcrypt.hash(password, 10);
+  const contrasenaHasheada = await bcrypt.hash(contrasena, 10);
   
-  const newUser = await User.create({
-    full_name,
-    email,
-    password: hashedPassword,
-    role
+  const nuevoUsuario = await Usuario.create({
+    nombre_completo,
+    rut,
+    correo,
+    contrasena: contrasenaHasheada,
+    rol
   });
 
-  return { id: newUser.id, email: newUser.email, name: newUser.full_name, role: newUser.role };
+  return { id: nuevoUsuario.id, correo: nuevoUsuario.correo, nombre: nuevoUsuario.nombre_completo, rol: nuevoUsuario.rol };
 };
 
 module.exports = {
-  loginUser,
-  getUserProfile,
-  registerUser
+  iniciarSesionUsuario,
+  obtenerPerfilUsuario,
+  registrarUsuario
 };

@@ -30,14 +30,14 @@ api.interceptors.response.use(
   (error) => {
     if (error.response && error.response.status === 401) {
       // Si el 401 viene del login, no recargamos la página
-      if (error.config && error.config.url && error.config.url.includes('/auth/login')) {
+      if (error.config && error.config.url && error.config.url.includes('/auth/iniciar-sesion')) {
         return Promise.reject(error);
       }
 
       // Si da 401 no autorizado en otras rutas, probablemente el token expiró.
       console.error("Token expirado o inválido. Debes volver a iniciar sesión.");
       localStorage.removeItem('token');
-      localStorage.removeItem('user');
+      localStorage.removeItem('usuario');
       
       window.location.href = '/'; 
     }

@@ -7,14 +7,14 @@ const { authenticateToken, requireAdmin } = require('../middlewares/authMiddlewa
 router.use(authenticateToken);
 router.use(requireAdmin);
 
-router.get('/buses', adminController.getAllBuses);
-router.get('/inspections/pending', adminController.getPendingInspections);
-router.post('/inspections/confirm-attendance', adminController.confirmAttendanceAdmin);
-router.post('/inspections/mark-no-show', adminController.markNoShowAdmin);
-router.post('/confirm-attendance', adminController.confirmAttendanceAdmin); // Para compatibilidad con Dashboard
-router.post('/mark-no-show', adminController.markNoShowAdmin); // Para compatibilidad con Dashboard
-router.post('/inspections/worklist', adminController.submitWorklist);
-router.get('/inspections/:bus_id', adminController.getInspectionByBusId);
-router.post('/repairs', adminController.submitRepair);
-router.get('/repairs/:bus_id', adminController.getRepairsByBusId);
+router.get('/buses', adminController.obtenerTodosLosBuses);
+router.get('/inspecciones/pendientes', adminController.obtenerReservasPendientes);
+router.post('/inspecciones/confirmar-asistencia', adminController.confirmarAsistenciaAdmin);
+router.post('/inspecciones/marcar-inasistencia', adminController.marcarInasistenciaAdmin);
+router.post('/confirmar-asistencia', adminController.confirmarAsistenciaAdmin); // Para compatibilidad con Dashboard
+router.post('/marcar-inasistencia', adminController.marcarInasistenciaAdmin); // Para compatibilidad con Dashboard
+router.post('/inspecciones/lista-trabajo', adminController.enviarInspeccion);
+router.get('/inspecciones/:bus_id', adminController.obtenerInspeccionPorBusId);
+router.post('/reparaciones', adminController.enviarReparacion);
+router.get('/reparaciones/:bus_id', adminController.obtenerReparacionesPorBusId);
 module.exports = router;

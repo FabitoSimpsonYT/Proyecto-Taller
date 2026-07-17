@@ -2,31 +2,18 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
 const Bus = sequelize.define('Bus', {
-  patente: { type: DataTypes.STRING, allowNull: false },
-  marca_carroceria: { type: DataTypes.STRING },
-  modelo_carroceria: { type: DataTypes.STRING },
-  marca_chasis: { type: DataTypes.STRING },
-  modelo_chasis: { type: DataTypes.STRING },
-  ano_fabricacion: { type: DataTypes.INTEGER },
+  patente: { type: DataTypes.STRING, allowNull: false, field: 'patente' },
+  marca_carroceria: { type: DataTypes.STRING, field: 'marca_carroceria' },
+  modelo_carroceria: { type: DataTypes.STRING, field: 'modelo_carroceria' },
+  marca_chasis: { type: DataTypes.STRING, field: 'marca_chasis' },
+  modelo_chasis: { type: DataTypes.STRING, field: 'modelo_chasis' },
+  ano_fabricacion: { type: DataTypes.INTEGER, field: 'ano_fabricacion' },
   
-  owner_rut: { type: DataTypes.STRING, allowNull: false },
-  owner_name: { type: DataTypes.STRING, allowNull: false },
-  owner_email: { type: DataTypes.STRING, allowNull: false },
-  owner_phone: { type: DataTypes.STRING },
-  
-  driver_rut: { type: DataTypes.STRING },
-  driver_name: { type: DataTypes.STRING },
-  driver_phone: { type: DataTypes.STRING },
-  
-  visual_details: { type: DataTypes.JSON },
-  
-  reservation_date: { type: DataTypes.DATE },
-  
-  status: { type: DataTypes.ENUM('pending', 'in_process', 'approved', 'rejected'), defaultValue: 'pending' },
+  detalles_visuales: { type: DataTypes.JSON, field: 'detalles_visuales' },
 }, {
   tableName: 'buses',
   timestamps: true,
-  createdAt: 'created_at',
+  createdAt: 'creado_en',
   updatedAt: false
 });
 

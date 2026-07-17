@@ -3,23 +3,23 @@ import { useNavigate } from 'react-router-dom';
 import { FaBoxOpen, FaSearch, FaWrench, FaFacebookF, FaInstagram, FaLinkedinIn, FaCheckSquare, FaBus, FaCogs, FaClipboardCheck, FaServer, FaCheck, FaWhatsapp } from 'react-icons/fa';
 import '../styles/LandingPage.css';
 
-function FeatureCard({ icon, title, description, details }) {
-  const [expanded, setExpanded] = useState(false);
+function TarjetaCaracteristica({ icono, titulo, descripcion, detalles }) {
+  const [expandido, setExpandido] = useState(false);
 
   return (
     <div
-      className={`caja ${expanded ? 'expandida' : ''}`}
-      onClick={() => setExpanded(!expanded)}
+      className={`caja ${expandido ? 'expandida' : ''}`}
+      onClick={() => setExpandido(!expandido)}
       style={{ cursor: 'pointer' }}
     >
-      <div className="icono-ventaja">{icon}</div>
-      <h3>{title}</h3>
-      <p>{description}</p>
+      <div className="icono-ventaja">{icono}</div>
+      <h3>{titulo}</h3>
+      <p>{descripcion}</p>
 
-      {expanded && (
+      {expandido && (
         <ul className="detalles-caja">
-          {details.map((detail, index) => (
-            <li key={index}><FaCheckSquare className="check-icon" /> {detail}</li>
+          {detalles.map((detalle, indice) => (
+            <li key={indice}><FaCheckSquare className="check-icon" /> {detalle}</li>
           ))}
         </ul>
       )}
@@ -67,41 +67,41 @@ function LandingPage() {
         <section id="caracteristicas" className="seccion-caracteristicas">
           <h2>Ventajas de Arréglame la Máquina</h2>
           <div className="lista-cajas">
-            <FeatureCard
-              icon={<FaBoxOpen />}
-              title="Órdenes de Compra"
-              description="Digitaliza tus pedidos y ahorra tiempo con procesos automáticos."
-              details={[
+            <TarjetaCaracteristica
+              icono={<FaBoxOpen />}
+              titulo="Órdenes de Compra"
+              descripcion="Digitaliza tus pedidos y ahorra tiempo con procesos automáticos."
+              detalles={[
                 "Workflow de aprobación de compras",
                 "Envío automático al proveedor por email",
                 "Seguimiento de tiempos de entrega en tiempo real"
               ]}
             />
-            <FeatureCard
-              icon={<FaSearch />}
-              title="Inventario de Precisión"
-              description="Controla cada tornillo y evita pérdidas de stock innecesarias."
-              details={[
+            <TarjetaCaracteristica
+              icono={<FaSearch />}
+              titulo="Inventario de Precisión"
+              descripcion="Controla cada tornillo y evita pérdidas de stock innecesarias."
+              detalles={[
                 "Historial completo de entradas y salidas",
                 "Alertas de stock crítico",
                 "Valoración de inventario en tiempo real"
               ]}
             />
-            <FeatureCard
-              icon={<FaWrench />}
-              title="Mantenimiento de Flota"
-              description="Asegura la operatividad de tus buses con un control de costos exacto."
-              details={[
+            <TarjetaCaracteristica
+              icono={<FaWrench />}
+              titulo="Mantenimiento de Flota"
+              descripcion="Asegura la operatividad de tus buses con un control de costos exacto."
+              detalles={[
                 "Creación de Órdenes de Trabajo (OT)",
                 "Worklist de diagnóstico preventivo",
                 "Consumo de inventario enlazado automáticamente"
               ]}
             />
-            <FeatureCard
-              icon={<FaServer />}
-              title="Privacidad Local"
-              description="Tu información es solo tuya. Sin dependencias de la nube."
-              details={[
+            <TarjetaCaracteristica
+              icono={<FaServer />}
+              titulo="Privacidad Local"
+              descripcion="Tu información es solo tuya. Sin dependencias de la nube."
+              detalles={[
                 "Instalación en servidores de tu taller",
                 "Acceso sin necesidad de internet (Offline)",
                 "Bases de datos seguras dentro de tu propiedad"

@@ -1,44 +1,44 @@
 const publicService = require('../services/publicService');
 
-const getClientByRut = async (req, res, next) => {
+const obtenerClientePorRut = async (req, res, next) => {
   try {
-    const result = await publicService.getClientByRut(req.params.rut);
+    const result = await publicService.obtenerClientePorRut(req.params.rut);
     res.json(result);
   } catch (error) { next(error); }
 };
 
-const getVehicleByPatente = async (req, res, next) => {
+const obtenerVehiculoPorPatente = async (req, res, next) => {
   try {
-    const result = await publicService.getVehicleByPatente(req.params.patente);
+    const result = await publicService.obtenerVehiculoPorPatente(req.params.patente);
     res.json(result);
   } catch (error) { next(error); }
 };
 
-const createReservation = async (req, res, next) => {
+const crearReserva = async (req, res, next) => {
   try {
-    const result = await publicService.createReservation(req.body, req.headers['authorization']);
+    const result = await publicService.crearReserva(req.body, req.headers['authorization']);
     res.status(201).json(result);
   } catch (error) { next(error); }
 };
 
-const getPendingReservationByPatente = async (req, res, next) => {
+const obtenerReservaPendientePorPatente = async (req, res, next) => {
   try {
-    const result = await publicService.getPendingReservation(req.params.patente);
+    const result = await publicService.obtenerReservaPendiente(req.params.patente);
     res.json(result);
   } catch (error) { next(error); }
 };
 
-const confirmAttendance = async (req, res, next) => {
+const confirmarAsistencia = async (req, res, next) => {
   try {
-    const result = await publicService.confirmAttendance(req.params.id);
+    const result = await publicService.confirmarAsistencia(req.params.id);
     res.json(result);
   } catch (error) { next(error); }
 };
 
 module.exports = {
-  getClientByRut,
-  getVehicleByPatente,
-  createReservation,
-  getPendingReservationByPatente,
-  confirmAttendance
+  obtenerClientePorRut,
+  obtenerVehiculoPorPatente,
+  crearReserva,
+  obtenerReservaPendientePorPatente,
+  confirmarAsistencia
 };

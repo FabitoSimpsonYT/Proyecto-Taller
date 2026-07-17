@@ -2,15 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { API_URL } from '../utils/api';
 
-function ConfirmAttendance() {
+function ConfirmarAsistencia() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [status, setStatus] = useState('loading'); // loading, success, error
+  const [estado, setEstado] = useState('cargando'); // cargando, exito, error
 
   useEffect(() => {
-    const confirm = async () => {
+    const confirmar = async () => {
       try {
-        const response = await fetch(`${API_URL}/api/reserva-atencion/${id}/confirm`, {
+        const response = await fetch(`${API_URL}/api/reserva-atencion/${id}/confirmar`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -18,20 +18,20 @@ function ConfirmAttendance() {
         });
 
         if (response.ok) {
-          setStatus('success');
+          setEstado('exito');
         } else {
-          setStatus('error');
+          setEstado('error');
         }
       } catch (error) {
-        console.error('Error confirming attendance:', error);
-        setStatus('error');
+        console.error('Error al confirmar asistencia:', error);
+        setEstado('error');
       }
     };
 
     if (id) {
-      confirm();
+      confirmar();
     } else {
-      setStatus('error');
+      setEstado('error');
     }
   }, [id]);
 
@@ -39,11 +39,11 @@ function ConfirmAttendance() {
     <div style={{ backgroundColor: '#111', backgroundImage: 'radial-gradient(circle at top right, rgba(255, 255, 255, 0.03), transparent 40%), radial-gradient(circle at bottom left, rgba(255, 255, 255, 0.03), transparent 40%)', minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
       <div style={{ background: 'rgba(20, 20, 20, 0.8)', backdropFilter: 'blur(15px)', WebkitBackdropFilter: 'blur(15px)', padding: '50px', borderRadius: '20px', border: '1px solid rgba(252, 227, 0, 0.3)', boxShadow: '0 20px 50px rgba(0,0,0,0.5)', textAlign: 'center', maxWidth: '500px' }}>
         
-        {status === 'loading' && (
+        {estado === 'cargando' && (
           <h2 style={{ color: '#fce300', marginBottom: '20px', fontSize: '32px', fontStyle: 'italic', fontWeight: '900', textTransform: 'uppercase' }}>Confirmando...</h2>
         )}
 
-        {status === 'success' && (
+        {estado === 'exito' && (
           <>
             <h2 style={{ color: '#00ff88', marginBottom: '20px', fontSize: '32px', fontStyle: 'italic', fontWeight: '900', textTransform: 'uppercase' }}>¡Asistencia Confirmada!</h2>
             <p style={{ color: '#ccc', marginBottom: '30px', fontSize: '16px', lineHeight: '1.6' }}>Gracias por confirmar tu asistencia. Te esperamos en Arréglame la Máquina.</p>
@@ -56,7 +56,7 @@ function ConfirmAttendance() {
           </>
         )}
 
-        {status === 'error' && (
+        {estado === 'error' && (
           <>
             <h2 style={{ color: '#ff4444', marginBottom: '20px', fontSize: '32px', fontStyle: 'italic', fontWeight: '900', textTransform: 'uppercase' }}>Error</h2>
             <p style={{ color: '#ccc', marginBottom: '30px', fontSize: '16px', lineHeight: '1.6' }}>Hubo un problema al confirmar tu asistencia. Es posible que el enlace sea inválido o ya se haya confirmado.</p>
@@ -73,4 +73,4 @@ function ConfirmAttendance() {
   );
 }
 
-export default ConfirmAttendance;
+export default ConfirmarAsistencia;
