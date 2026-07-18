@@ -1,27 +1,46 @@
 const authService = require('../services/authService');
+const { validationResult } = require('express-validator');
 
-const login = async (req, res, next) => {
+const iniciarSesion = async (req, res, next) => {
   try {
-    const { email, password } = req.body;
-    if (!email || !password) throw { status: 400, message: 'Email y contraseña son obligatorios' };
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ error: errors.array()[0].msg });
+    }
 
-    const result = await authService.loginUser(email, password);
+    const { correo, contrasena } = req.body;
+
+    const result = await authService.iniciarSesionUsuario(correo, contrasena);
     res.json(result);
   } catch (error) {
     next(error);
   }
 };
 
-const getProfile = async (req, res, next) => {
+const obtenerPerfil = async (req, res, next) => {
   try {
-    const result = await authService.getUserProfile(req.user.id);
+    const result = await authService.obtenerPerfilUsuario(req.user.id);
     res.json(result);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const registrar = async (req, res, next) => {
+  try {
+    const { nombre_completo, rut, correo, contrasena, rol } = req.body;
+    if (!nombre_completo || !rut || !correo || !contrasena || !rol) {
+      throw { status: 400, message: 'Todos los campos son obligatorios' };
+    }
+    const result = await authService.registrarUsuario(nombre_completo, rut, correo, contrasena, rol);
+    res.status(201).json({ message: 'Usuario creado exitosamente', usuario: result });
   } catch (error) {
     next(error);
   }
 };
 
 module.exports = {
-  login,
-  getProfile
+  iniciarSesion,
+  obtenerPerfil,
+  registrar
 };

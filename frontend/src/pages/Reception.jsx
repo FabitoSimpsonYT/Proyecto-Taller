@@ -6,44 +6,44 @@ import '../styles/Taller.css';
 function Reception() {
   const navigate = useNavigate();
   const [buses, setBuses] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [selectedBus, setSelectedBus] = useState(null);
-  const [userProfile, setUserProfile] = useState(null);
-  const [submitStatus, setSubmitStatus] = useState({ loading: false, error: null, success: null });
+  const [cargando, setCargando] = useState(true);
+  const [busSeleccionado, setBusSeleccionado] = useState(null);
+  const [perfilUsuario, setPerfilUsuario] = useState(null);
+  const [estadoEnvio, setEstadoEnvio] = useState({ cargando: false, error: null, exito: null });
   
   const token = localStorage.getItem('token');
 
   // Worklist State
-  const [worklist, setWorklist] = useState([]);
-  const [newItemName, setNewItemName] = useState('');
-  const [notes, setNotes] = useState('');
+  const [listaTrabajo, setListaTrabajo] = useState([]);
+  const [nombreNuevoItem, setNombreNuevoItem] = useState('');
+  const [notas, setNotas] = useState('');
 
   useEffect(() => {
-    fetchUserProfile();
+    obtenerPerfilUsuario();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const fetchUserProfile = async () => {
+  const obtenerPerfilUsuario = async () => {
     try {
-      const response = await fetch(`${API_URL}/api/auth/profile`, {
+      const response = await fetch(`${API_URL}/api/auth/perfil`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
 
       if (response.ok) {
         const user = await response.json();
-        setUserProfile(user);
-        await fetchBuses();
+        setPerfilUsuario(user);
+        await obtenerBuses();
       } else {
         navigate('/login');
       }
     } catch (error) {
-      console.error('Error fetching profile:', error);
+      console.error('Error al obtener perfil:', error);
       navigate('/login');
     }
   };
 
-  const fetchBuses = async () => {
-    setLoading(true);
+  const obtenerBuses = async () => {
+    setCargando(true);
     try {
       const response = await fetch(`${API_URL}/api/admin/buses`, {
         headers: { 'Authorization': `Bearer ${token}` }
@@ -51,68 +51,68 @@ function Reception() {
 
       if (response.ok) {
         const data = await response.json();
-        setBuses(data.filter(b => b.status === 'in_process'));
+        setBuses(data.filter(b => b.estado === 'en_proceso'));
       }
     } catch (error) {
-      console.error('Error fetching buses:', error);
+      console.error('Error al obtener buses:', error);
     } finally {
-      setLoading(false);
+      setCargando(false);
     }
   };
 
-  const handleSelectBus = (bus) => {
-    setSelectedBus(bus);
-    setSubmitStatus({ loading: false, error: null, success: null });
-    setWorklist([]);
-    setNewItemName('');
-    setNotes('');
+  const manejarSeleccionBus = (bus) => {
+    setBusSeleccionado(bus);
+    setEstadoEnvio({ cargando: false, error: null, exito: null });
+    setListaTrabajo([]);
+    setNombreNuevoItem('');
+    setNotas('');
   };
 
-  const handleAddItem = () => {
-    if (newItemName.trim()) {
-      setWorklist([...worklist, { name: newItemName.trim(), status: 'pending' }]);
-      setNewItemName('');
+  const manejarAgregarItem = () => {
+    if (nombreNuevoItem.trim()) {
+      setListaTrabajo([...listaTrabajo, { name: nombreNuevoItem.trim(), status: 'pendiente' }]);
+      setNombreNuevoItem('');
     }
   };
 
-  const handleConfirm = async (e) => {
+  const manejarConfirmar = async (e) => {
     e.preventDefault();
-    if (!selectedBus) return;
+    if (!busSeleccionado) return;
 
-    setSubmitStatus({ loading: true, error: null, success: null });
+    setEstadoEnvio({ cargando: true, error: null, exito: null });
     
     try {
-      const itemsArray = worklist.map(item => ({
-        item_name: item.name,
-        status: item.status
+      const itemsArray = listaTrabajo.map(item => ({
+        nombre_item: item.name,
+        estado: item.status
       }));
 
-      const worklistRes = await fetch(`${API_URL}/api/admin/inspections/worklist`, {
+      const worklistRes = await fetch(`${API_URL}/api/admin/inspecciones/lista-trabajo`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({
-          bus_id: selectedBus.id,
+          bus_id: busSeleccionado.id,
           items: itemsArray,
-          exams_notes: notes
+          notas_examen: notas
         })
       });
 
       if (worklistRes.ok) {
-        setSubmitStatus({ loading: false, error: null, success: 'Diagnóstico guardado exitosamente. El bus ha pasado al Taller.' });
+        setEstadoEnvio({ cargando: false, error: null, exito: 'Diagnóstico guardado exitosamente. El bus ha pasado al Taller.' });
         setTimeout(() => {
-          setSelectedBus(null);
-          fetchBuses();
+          setBusSeleccionado(null);
+          obtenerBuses();
         }, 2000);
       } else {
         const err = await worklistRes.json();
-        setSubmitStatus({ loading: false, error: err.error || 'Error al guardar diagnóstico', success: null });
+        setEstadoEnvio({ cargando: false, error: err.error || 'Error al guardar diagnóstico', exito: null });
       }
     } catch (error) {
-      console.error('Error submitting worklist:', error);
-      setSubmitStatus({ loading: false, error: 'Error de conexión con el servidor.', success: null });
+      console.error('Error enviando lista de trabajo:', error);
+      setEstadoEnvio({ cargando: false, error: 'Error de conexión con el servidor.', exito: null });
     }
   };
 
@@ -126,16 +126,16 @@ function Reception() {
           <h1>Worklist de Recepción</h1>
         </div>
         <div className="user-info">
-          <span className="user-name">{userProfile?.name}</span>
+          <span className="user-name">{perfilUsuario?.nombre}</span>
           <span className="role mechanic">Recepcionista</span>
         </div>
       </header>
 
       <main className="taller-content">
-        {!selectedBus ? (
+        {!busSeleccionado ? (
           <div className="buses-selection">
             <h2 className="section-title">Máquinas en Espera de Recepción</h2>
-            {loading ? (
+            {cargando ? (
               <div className="loader">Cargando máquinas...</div>
             ) : buses.length === 0 ? (
               <div className="empty-state">
@@ -146,13 +146,13 @@ function Reception() {
             ) : (
               <div className="taller-grid">
                 {buses.map(bus => (
-                  <div key={bus.id} className="bus-card" onClick={() => handleSelectBus(bus)}>
+                  <div key={bus.id} className="bus-card" onClick={() => manejarSeleccionBus(bus)}>
                     <div className="bus-card-header">
                       <h3>{bus.patente}</h3>
                       <span className="status-badge pending">EN RECEPCIÓN</span>
                     </div>
                     <div className="bus-card-body">
-                      <p><strong>Dueño:</strong> {bus.owner_name}</p>
+                      <p><strong>Dueño:</strong> {bus.Dueno?.nombre_completo || 'S/N'}</p>
                       <p><strong>Modelo:</strong> {bus.marca_carroceria} {bus.modelo_carroceria} / {bus.marca_chasis} {bus.modelo_chasis}</p>
                       <p><strong>Año:</strong> {bus.ano_fabricacion}</p>
                     </div>
@@ -169,10 +169,10 @@ function Reception() {
         ) : (
           <div className="inspection-workspace">
             <div className="workspace-header">
-              <button className="btn-cancel" onClick={() => setSelectedBus(null)}>
+              <button className="btn-cancel" onClick={() => setBusSeleccionado(null)}>
                 ✕ Cancelar Checklist
               </button>
-              <h2>Diagnóstico: <span className="patente-highlight">{selectedBus.patente}</span></h2>
+              <h2>Diagnóstico: <span className="patente-highlight">{busSeleccionado.patente}</span></h2>
             </div>
             
             <div className="workspace-layout">
@@ -180,50 +180,73 @@ function Reception() {
                 <h3>Detalles del Vehículo</h3>
                 <div className="info-group">
                   <label>Propietario</label>
-                  <p>{selectedBus.owner_name} ({selectedBus.owner_rut})</p>
-                  <p>Tel: {selectedBus.owner_phone}</p>
+                  <p>{busSeleccionado.Dueno?.nombre_completo || 'S/N'} ({busSeleccionado.Dueno?.rut || 'S/N'})</p>
+                  <p>Tel: {busSeleccionado.Dueno?.telefono || 'S/N'}</p>
                 </div>
+                {busSeleccionado.Conductor?.nombre_completo && (
+                  <>
+                    <hr />
+                    <div className="info-group">
+                      <label>Conductor</label>
+                      <p>{busSeleccionado.Conductor.nombre_completo} {busSeleccionado.Conductor.rut ? `(${busSeleccionado.Conductor.rut})` : ''}</p>
+                      {busSeleccionado.Conductor.telefono && <p>Tel: {busSeleccionado.Conductor.telefono}</p>}
+                    </div>
+                  </>
+                )}
                 <hr />
                 <div className="info-group">
                   <label>Carrocería</label>
-                  <p>{selectedBus.marca_carroceria} {selectedBus.modelo_carroceria}</p>
+                  <p>{busSeleccionado.marca_carroceria} {busSeleccionado.modelo_carroceria}</p>
                 </div>
                 <div className="info-group">
                   <label>Chasis</label>
-                  <p>{selectedBus.marca_chasis} {selectedBus.modelo_chasis}</p>
+                  <p>{busSeleccionado.marca_chasis} {busSeleccionado.modelo_chasis}</p>
                 </div>
                 <div className="info-group">
                   <label>Año de Fabricación</label>
-                  <p>{selectedBus.ano_fabricacion}</p>
+                  <p>{busSeleccionado.ano_fabricacion}</p>
                 </div>
                 <hr />
                 <div className="info-group">
                   <label>Reserva Original</label>
-                  <p>{new Date(selectedBus.reservation_date).toLocaleString('es-CL')}</p>
+                  <p>{new Date(busSeleccionado.fecha_reserva).toLocaleString('es-CL')}</p>
                 </div>
+                {busSeleccionado.detalles_visuales && busSeleccionado.detalles_visuales.length > 0 && (
+                  <>
+                    <hr />
+                    <div className="info-group">
+                      <label style={{ color: '#fce300' }}>Detalles a Visualizar (Cliente)</label>
+                      <ul style={{ paddingLeft: '20px', margin: '5px 0' }}>
+                        {busSeleccionado.detalles_visuales.map((detail, idx) => (
+                          <li key={idx} style={{ marginBottom: '5px' }}>{detail}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  </>
+                )}
               </aside>
 
               <div className="repair-form-panel">
-                <form onSubmit={handleConfirm}>
+                <form onSubmit={manejarConfirmar}>
                   <h3>Checklist de Inspección Visual</h3>
                   
                   <div className="repuestos-section">
                     <div className="repuestos-list" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
-                      {worklist.map((item, index) => (
+                      {listaTrabajo.map((item, index) => (
                         <div key={index} style={{ display: 'flex', flexDirection: 'column', marginBottom: '10px' }}>
                           <label style={{ color: '#aaa', textTransform: 'capitalize', marginBottom: '8px' }}>Estado de {item.name}</label>
                           <select 
                             value={item.status} 
                             onChange={(e) => {
-                               const newWorklist = [...worklist];
+                               const newWorklist = [...listaTrabajo];
                                newWorklist[index].status = e.target.value;
-                               setWorklist(newWorklist);
+                               setListaTrabajo(newWorklist);
                             }}
                             style={{ padding: '12px', borderRadius: '8px', background: '#333', color: 'white', border: '1px solid #555' }}
                           >
-                            <option value="pending">Pendiente de Revisión</option>
-                            <option value="pass">OK (Buen Estado)</option>
-                            <option value="fail">Falla / Dañado</option>
+                            <option value="pendiente">Pendiente de Revisión</option>
+                            <option value="aprobado">OK (Buen Estado)</option>
+                            <option value="rechazado">Falla / Dañado</option>
                           </select>
                         </div>
                       ))}
@@ -233,11 +256,11 @@ function Reception() {
                       <input 
                         type="text" 
                         placeholder="Nueva pieza a inspeccionar..." 
-                        value={newItemName}
-                        onChange={e => setNewItemName(e.target.value)}
+                        value={nombreNuevoItem}
+                        onChange={e => setNombreNuevoItem(e.target.value)}
                         style={{ flex: 1, padding: '10px', borderRadius: '5px', background: '#222', color: 'white', border: '1px solid #555' }}
                       />
-                      <button type="button" onClick={handleAddItem} style={{ padding: '10px 20px', background: '#4CAF50', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer', fontWeight: 'bold' }}>
+                      <button type="button" onClick={manejarAgregarItem} style={{ padding: '10px 20px', background: '#4CAF50', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer', fontWeight: 'bold' }}>
                         + Añadir
                       </button>
                     </div>
@@ -246,22 +269,22 @@ function Reception() {
                   <div className="form-group" style={{ marginTop: '20px' }}>
                     <label>Observaciones Adicionales / Detalles a Manipular</label>
                     <textarea 
-                      value={notes}
-                      onChange={(e) => setNotes(e.target.value)}
+                      value={notas}
+                      onChange={(e) => setNotas(e.target.value)}
                       placeholder="Ej: Espejo roto, raya lateral profunda, etc..."
                       rows="4"
                     />
                   </div>
 
-                  {submitStatus.error && (
+                  {estadoEnvio.error && (
                     <div className="error-message" style={{ color: '#ff4444', backgroundColor: 'rgba(255,68,68,0.1)', padding: '15px', borderRadius: '8px', marginTop: '20px' }}>
-                      {submitStatus.error}
+                      {estadoEnvio.error}
                     </div>
                   )}
 
-                  {submitStatus.success && (
+                  {estadoEnvio.exito && (
                     <div className="success-message" style={{ color: '#00ff88', backgroundColor: 'rgba(0,255,136,0.1)', padding: '15px', borderRadius: '8px', marginTop: '20px' }}>
-                      {submitStatus.success}
+                      {estadoEnvio.exito}
                     </div>
                   )}
 
@@ -269,10 +292,10 @@ function Reception() {
                     <button 
                       type="submit" 
                       className="btn-submit"
-                      disabled={submitStatus.loading}
+                      disabled={estadoEnvio.cargando}
                       style={{ background: 'linear-gradient(45deg, #fce300, #ffb300)', color: '#111', width: '100%' }}
                     >
-                      {submitStatus.loading ? 'Guardando...' : 'ACTUALIZAR WORKLIST'}
+                      {estadoEnvio.cargando ? 'Guardando...' : 'ACTUALIZAR WORKLIST'}
                     </button>
                   </div>
                 </form>

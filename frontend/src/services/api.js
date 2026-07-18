@@ -29,15 +29,17 @@ api.interceptors.response.use(
   },
   (error) => {
     if (error.response && error.response.status === 401) {
-      // Si da 401 no autorizado, probablemente el token expiró.
-      // Aquí podrías despachar un evento o llamar a una función para limpiar el estado
+      // Si el 401 viene del login, no recargamos la página
+      if (error.config && error.config.url && error.config.url.includes('/auth/iniciar-sesion')) {
+        return Promise.reject(error);
+      }
+
+      // Si da 401 no autorizado en otras rutas, probablemente el token expiró.
       console.error("Token expirado o inválido. Debes volver a iniciar sesión.");
-      // Limpiamos el token por seguridad
       localStorage.removeItem('token');
-      localStorage.removeItem('user');
+      localStorage.removeItem('usuario');
       
-      // Opcional: Redirigir al usuario al login
-      // window.location.href = '/login'; 
+      window.location.href = '/'; 
     }
     return Promise.reject(error);
   }

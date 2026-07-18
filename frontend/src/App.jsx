@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import LandingForm from './pages/LandingForm';
-import ConfirmAttendance from './pages/ConfirmAttendance';
+import ConfirmarAsistencia from './pages/ConfirmAttendance';
 import Reception from './pages/Reception';
 import Taller from './pages/Taller';
 import LandingPage from './pages/LandingPage';
@@ -11,17 +11,17 @@ import ErrorBoundary from './components/ErrorBoundary';
 import { AuthContext } from './context/AuthContext';
 
 function AuthGate({ children, requireAuth = true }) {
-  const { user, loading } = useContext(AuthContext);
+  const { usuario, cargando } = useContext(AuthContext);
 
-  if (loading) {
+  if (cargando) {
     return <div style={{ color: '#fff', padding: '24px' }}>Validando sesión...</div>;
   }
 
-  if (requireAuth && !user) {
+  if (requireAuth && !usuario) {
     return <Navigate to="/login" replace />;
   }
 
-  if (!requireAuth && user) {
+  if (!requireAuth && usuario) {
     return <Navigate to="/dashboard" replace />;
   }
 
@@ -29,7 +29,7 @@ function AuthGate({ children, requireAuth = true }) {
 }
 
 function App() {
-  const { logout } = useContext(AuthContext);
+  const { cerrarSesion } = useContext(AuthContext);
 
   return (
     <Router>
@@ -41,15 +41,15 @@ function App() {
             <Route path="/agendar" element={<LandingForm />} />
             <Route path="/reserva-atencion" element={<Navigate to="/agendar" />} />
             <Route path="/recepcion" element={<AuthGate><Reception /></AuthGate>} />
-            <Route path="/confirm-attendance/:id" element={<AuthGate><ConfirmAttendance /></AuthGate>} />
+            <Route path="/confirmar-asistencia/:id" element={<AuthGate><ConfirmarAsistencia /></AuthGate>} />
             <Route path="/dashboard" element={
               <AuthGate>
-                <Dashboard handleLogout={logout} />
+                <Dashboard manejarCierreSesion={cerrarSesion} />
               </AuthGate>
             } />
             <Route path="/taller" element={
               <AuthGate>
-                <Taller handleLogout={logout} />
+                <Taller manejarCierreSesion={cerrarSesion} />
               </AuthGate>
             } />
           </Routes>

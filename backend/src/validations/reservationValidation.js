@@ -11,18 +11,18 @@ const isValidRut = (rut) => {
   return (S ? S - 1 : 'k').toString() === dv.toLowerCase();
 };
 
-const validateReservation = [
-  body('owner_rut')
+const validarReserva = [
+  body('rut_dueno')
     .notEmpty().withMessage('El RUT del dueño es obligatorio')
     .custom((value) => {
       if (!isValidRut(value)) throw new Error('RUT del dueño inválido');
       return true;
     }),
-  body('owner_name').notEmpty().withMessage('El nombre del dueño es obligatorio'),
-  body('owner_email').isEmail().withMessage('El email del dueño debe ser válido'),
-  body('owner_phone').notEmpty().withMessage('El teléfono del dueño es obligatorio'),
+  body('nombre_dueno').notEmpty().withMessage('El nombre del dueño es obligatorio'),
+  body('correo_dueno').isEmail().withMessage('El email del dueño debe ser válido'),
+  body('telefono_dueno').notEmpty().withMessage('El teléfono del dueño es obligatorio'),
   
-  body('reservation_date').notEmpty().withMessage('La fecha de reserva es obligatoria').isISO8601().withMessage('Formato de fecha inválido'),
+  body('fecha_reserva').notEmpty().withMessage('La fecha de reserva es obligatoria').isISO8601().withMessage('Formato de fecha inválido'),
   
   body('patente')
     .notEmpty().withMessage('La patente es obligatoria')
@@ -47,10 +47,13 @@ const validateReservation = [
   body('modelo_chasis').notEmpty().withMessage('El modelo del chasis es obligatorio'),
 
   // Chofer es opcional
-  body('driver_rut').optional({ checkFalsy: true }).custom((value) => {
+  body('rut_conductor').optional({ checkFalsy: true }).custom((value) => {
     if (!isValidRut(value)) throw new Error('RUT del chofer inválido');
     return true;
   }),
+  
+  // Detalles visuales opcionales
+  body('detalles_visuales').optional().isArray().withMessage('Los detalles visuales deben ser un array'),
 
   // Middleware para retornar errores de validación
   (req, res, next) => {
@@ -63,5 +66,5 @@ const validateReservation = [
 ];
 
 module.exports = {
-  validateReservation
+  validarReserva
 };

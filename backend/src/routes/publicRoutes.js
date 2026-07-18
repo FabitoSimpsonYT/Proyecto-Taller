@@ -1,12 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const publicController = require('../controllers/publicController');
-const { validateReservation } = require('../validations/reservationValidation');
+const { validarReserva } = require('../validations/reservationValidation');
 
-router.get('/clientes/:rut', publicController.getClientByRut);
-router.get('/vehiculos/:patente', publicController.getVehicleByPatente);
-router.post('/reserva-atencion', validateReservation, publicController.createReservation);
-router.get('/reserva-atencion/patente/:patente', publicController.getPendingReservationByPatente);
-router.post('/reserva-atencion/:id/confirm', publicController.confirmAttendance);
+router.get('/clientes/:rut', publicController.obtenerClientePorRut);
+router.get('/vehiculos/:patente', publicController.obtenerVehiculoPorPatente);
+router.post('/reserva-atencion', validarReserva, publicController.crearReserva);
+router.get('/reserva-atencion/patente/:patente', publicController.obtenerReservaPendientePorPatente);
+router.post('/reserva-atencion/:id/confirmar', publicController.confirmarAsistencia);
 
 module.exports = router;

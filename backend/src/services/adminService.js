@@ -1,84 +1,111 @@
-const { Bus, Inspection, Repair, User, sequelize } = require('../entities/index.entities');
+const { Bus, Inspeccion, Reparacion, Usuario, Persona, Reservacion, sequelize } = require('../entities/index.entities');
 
-const getAllBuses = async () => {
-  return await Bus.findAll({ order: [['created_at', 'DESC']] });
-};
-
-const getPendingBuses = async () => {
-  return await Bus.findAll({
-    where: { status: ['pending', 'in_process'] },
-    order: [['created_at', 'DESC']]
+const obtenerTodosLosBuses = async () => {
+  return await Bus.findAll({ 
+    include: [{ model: Persona, as: 'Dueno' }],
+    order: [['creado_en', 'DESC']] 
   });
 };
 
-const confirmAttendance = async (bus_id) => {
-  const bus = await Bus.findByPk(bus_id);
-  if (!bus) throw { status: 404, message: 'Bus no encontrado' };
-  
-  bus.status = 'in_process';
-  await bus.save();
-  return { message: 'Asistencia confirmada para el bus ' + bus.patente };
+const obtenerReservasPendientes = async () => {
+  return await Reservacion.findAll({
+    where: { estado: ['pendiente', 'en_proceso'] },
+    include: [{ 
+      model: Bus,
+      include: [{ model: Persona, as: 'Dueno' }]
+    }],
+    order: [['creado_en', 'DESC']]
+  });
 };
 
-const submitWorklist = async (userId, data) => {
-  const { bus_id, items, exams_notes } = data;
+const confirmarAsistencia = async (reservacion_id) => {
+  const reservacion = await Reservacion.findByPk(reservacion_id);
+  if (!reservacion) throw { status: 404, message: 'Reserva no encontrada' };
+  
+  reservacion.estado = 'en_proceso';
+  await reservacion.save();
+  return { message: 'Asistencia confirmada' };
+};
+
+const marcarInasistencia = async (reservacion_id) => {
+  const reservacion = await Reservacion.findByPk(reservacion_id);
+  if (!reservacion) throw { status: 404, message: 'Reserva no encontrada' };
+  
+  reservacion.estado = 'rechazado';
+  await reservacion.save();
+  return { message: 'Inasistencia marcada' };
+};
+
+const enviarInspeccion = async (usuarioId, data) => {
+  const { bus_id, items, notas_examen } = data;
   if (!bus_id || !items) throw { status: 400, message: 'Bus ID e Items son obligatorios' };
 
-  const newInspection = await Inspection.create({
+  const nuevaInspeccion = await Inspeccion.create({
     bus_id,
-    inspector_id: userId,
+    inspector_id: usuarioId,
     items,
-    exams_notes
+    notas_examen
   });
 
-  const hasFailedItems = items.some(item => item.status === 'fail');
-  await Bus.update(
-    { status: hasFailedItems ? 'rejected' : 'approved' },
-    { where: { id: bus_id } }
-  );
+  const hayItemsRechazados = items.some(item => item.estado === 'rechazado');
+  
+  // Find active reservation
+  const reservacionActiva = await Reservacion.findOne({
+    where: { bus_id, estado: 'en_proceso' }
+  });
+  
+  if (reservacionActiva) {
+    reservacionActiva.estado = hayItemsRechazados ? 'rechazado' : 'aprobado';
+    await reservacionActiva.save();
+  }
 
-  return { message: 'Inspección registrada con éxito', inspection: newInspection };
+  return { message: 'Inspección registrada con éxito', inspeccion: nuevaInspeccion };
 };
 
-const submitRepair = async (userId, data) => {
-  const { bus_id, description, repuestos_utilizados, status } = data;
+const enviarReparacion = async (usuarioId, data) => {
+  const { bus_id, descripcion, repuestos_utilizados, estado } = data;
   
-  await Repair.create({
+  await Reparacion.create({
     bus_id,
-    mechanic_id: userId,
-    description,
+    mecanico_id: usuarioId,
+    descripcion,
     repuestos_utilizados: repuestos_utilizados || [],
-    status: status || 'in_progress'
+    estado: estado || 'en_proceso'
   });
   
-  if (status === 'completed') {
-    await Bus.update({ status: 'approved' }, { where: { id: bus_id } });
-  } else {
-    await Bus.update({ status: 'in_process' }, { where: { id: bus_id } });
+  // Find active reservation
+  const reservacionActiva = await Reservacion.findOne({
+    where: { bus_id, estado: ['en_proceso', 'pendiente'] }
+  });
+
+  if (reservacionActiva) {
+    reservacionActiva.estado = (estado === 'completado') ? 'aprobado' : 'en_proceso';
+    await reservacionActiva.save();
   }
 
   return { message: 'Reparación actualizada con éxito' };
 };
 
-const getRepairs = async (bus_id) => {
-  return await Repair.findAll({
+const obtenerReparaciones = async (bus_id) => {
+  return await Reparacion.findAll({
     where: { bus_id },
-    include: [{ model: User, as: 'Mechanic', attributes: ['id', 'name', 'role'] }],
-    order: [['repair_date', 'DESC']]
+    include: [{ model: Usuario, as: 'Mecanico', attributes: ['id', 'nombre_completo', 'rol'] }],
+    order: [['fecha_reparacion', 'DESC']]
   });
 };
 
-const getInspection = async (bus_id) => {
-  const inspection = await Inspection.findOne({ where: { bus_id }, order: [['inspection_date', 'DESC']] });
-  return inspection || {};
+const obtenerInspeccion = async (bus_id) => {
+  const inspeccion = await Inspeccion.findOne({ where: { bus_id }, order: [['fecha_inspeccion', 'DESC']] });
+  return inspeccion || {};
 };
 
 module.exports = {
-  getAllBuses,
-  getPendingBuses,
-  confirmAttendance,
-  submitWorklist,
-  submitRepair,
-  getRepairs,
-  getInspection
+  obtenerTodosLosBuses,
+  obtenerReservasPendientes,
+  confirmarAsistencia,
+  marcarInasistencia,
+  enviarInspeccion,
+  enviarReparacion,
+  obtenerReparaciones,
+  obtenerInspeccion
 };
