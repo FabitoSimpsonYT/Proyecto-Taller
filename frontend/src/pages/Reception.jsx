@@ -116,7 +116,9 @@ function Reception() {
         </div>
         <div className="user-info">
           <span className="user-name">{perfilUsuario?.nombre}</span>
-          <span className="role mechanic">Recepcionista</span>
+          <span className={`role ${perfilUsuario?.rol || 'mechanic'}`}>
+            {perfilUsuario?.rol === 'admin' ? 'Administrador' : 'Mecánico'}
+          </span>
         </div>
       </header>
 
