@@ -196,6 +196,14 @@ function LandingForm() {
       return;
     }
 
+    const fechaHoraReserva = new Date(`${datosFormulario.fecha_reserva}T${datosFormulario.hora_reserva}`);
+    const ahora = new Date();
+    
+    if (fechaHoraReserva < ahora) {
+      Swal.fire('Error', 'La fecha y hora de reserva no pueden ser en el pasado.', 'error');
+      return;
+    }
+
     setCargando(true);
     
     try {
@@ -322,7 +330,7 @@ function LandingForm() {
   return (
     <div style={{ backgroundColor: '#111', backgroundImage: 'radial-gradient(circle at top right, rgba(255, 255, 255, 0.03), transparent 40%), radial-gradient(circle at bottom left, rgba(255, 255, 255, 0.03), transparent 40%)', minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: '50px', paddingBottom: '50px' }}>
       <div style={{ position: 'absolute', top: 30, right: 30 }}>
-        <button onClick={() => navigate('/login')} style={{ background: 'transparent', border: '1px solid #444', color: '#ccc', cursor: 'pointer', padding: '10px 20px', borderRadius: '8px', fontWeight: 'bold', transition: 'all 0.3s' }} onMouseOver={(e) => { e.currentTarget.style.borderColor = '#fce300'; e.currentTarget.style.color = '#fce300'; }} onMouseOut={(e) => { e.currentTarget.style.borderColor = '#444'; e.currentTarget.style.color = '#ccc'; }}>Acceso Admin</button>
+        <button onClick={() => navigate('/login')} style={{ background: 'transparent', border: '1px solid #444', color: '#ccc', cursor: 'pointer', padding: '10px 20px', borderRadius: '8px', fontWeight: 'bold', transition: 'all 0.3s' }} onMouseOver={(e) => { e.currentTarget.style.borderColor = '#fce300'; e.currentTarget.style.color = '#fce300'; }} onMouseOut={(e) => { e.currentTarget.style.borderColor = '#444'; e.currentTarget.style.color = '#ccc'; }}>Acceder</button>
       </div>
 
       <h1 style={{ color: '#fce300', marginBottom: '10px', fontSize: '48px', fontStyle: 'italic', fontWeight: '900', textTransform: 'uppercase', textShadow: '2px 2px 10px rgba(252, 227, 0, 0.2)' }}>Arréglame la Máquina</h1>

@@ -1,11 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const adminController = require('../controllers/adminController');
-const { authenticateToken, requireAdmin } = require('../middlewares/authMiddleware');
+const { authenticateToken, requireMecanico } = require('../middlewares/authMiddleware');
 
 // Aplicar middlewares a todas las rutas de admin
 router.use(authenticateToken);
-router.use(requireAdmin);
+router.use(requireMecanico);
 
 router.get('/buses', adminController.obtenerTodosLosBuses);
 router.get('/inspecciones/pendientes', adminController.obtenerReservasPendientes);
