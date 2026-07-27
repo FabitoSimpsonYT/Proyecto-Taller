@@ -128,7 +128,7 @@ function Reception() {
               <div className="loader">Cargando máquinas...</div>
             ) : buses.length === 0 ? (
               <div className="empty-state">
-                <div className="empty-icon">📋</div>
+                <div className="empty-icon">[!]</div>
                 <h3>No hay buses pendientes de recepción</h3>
                 <p>Confirma la asistencia de reservas desde el panel de control para que aparezcan aquí.</p>
               </div>
@@ -147,7 +147,7 @@ function Reception() {
                     </div>
                     <div className="bus-card-footer">
                       <button className="btn-start-inspection" style={{ backgroundColor: '#fce300', color: '#111' }}>
-                        HACER CHECKLIST ➔
+                        HACER CHECKLIST -&gt;
                       </button>
                     </div>
                   </div>
@@ -159,7 +159,7 @@ function Reception() {
           <div className="inspection-workspace">
             <div className="workspace-header">
               <button className="btn-cancel" onClick={() => setBusSeleccionado(null)}>
-                ✕ Cancelar Checklist
+                X Cancelar Checklist
               </button>
               <h2>Diagnóstico: <span className="patente-highlight">{busSeleccionado.patente}</span></h2>
             </div>

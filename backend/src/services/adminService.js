@@ -1,9 +1,24 @@
 const { Bus, Inspeccion, Reparacion, Usuario, Persona, Reservacion, sequelize } = require('../entities/index.entities');
 
 const obtenerTodosLosBuses = async () => {
-  return await Bus.findAll({ 
-    include: [{ model: Persona, as: 'Dueno' }],
-    order: [['creado_en', 'DESC']] 
+  const reservaciones = await Reservacion.findAll({
+    include: [{ 
+      model: Bus,
+      include: [{ model: Persona, as: 'Dueno' }]
+    }],
+    order: [['creado_en', 'DESC']]
+  });
+
+  return reservaciones.map(res => {
+    const busData = res.Bus ? res.Bus.toJSON() : {};
+    return {
+      ...busData,
+      bus_id: busData.id,
+      estado: res.estado,
+      fecha_reserva: res.fecha_reserva,
+      reserva_id: res.id,
+      id: res.id
+    };
   });
 };
 

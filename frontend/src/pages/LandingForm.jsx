@@ -199,8 +199,11 @@ function LandingForm() {
     const fechaHoraReserva = new Date(`${datosFormulario.fecha_reserva}T${datosFormulario.hora_reserva}`);
     const ahora = new Date();
     
-    if (fechaHoraReserva < ahora) {
-      Swal.fire('Error', 'La fecha y hora de reserva no pueden ser en el pasado.', 'error');
+    // Requerir al menos 2 horas de anticipación
+    const dosHorasDespues = new Date(ahora.getTime() + (2 * 60 * 60 * 1000));
+    
+    if (fechaHoraReserva < dosHorasDespues) {
+      Swal.fire('Error', 'La reserva debe realizarse con al menos 2 horas de anticipación a la hora actual.', 'error');
       return;
     }
 

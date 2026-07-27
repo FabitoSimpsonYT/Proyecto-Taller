@@ -28,25 +28,28 @@ const obtenerVehiculoPorPatente = async (patente) => {
 
 const crearReserva = async (data, authHeader) => {
   const { patente, rut_dueno, nombre_dueno, correo_dueno, telefono_dueno, fecha_reserva, marca_carroceria, modelo_carroceria, marca_chasis, modelo_chasis, ano_fabricacion } = data;
-  
+
   if (!patente || !rut_dueno || !nombre_dueno || !fecha_reserva) {
     throw { status: 400, message: 'Faltan datos obligatorios, incluyendo la fecha de reserva' };
   }
 
   const reqDateTime = new Date(fecha_reserva);
   const now = new Date();
-  
+
   let isAdmin = false;
   if (authHeader && authHeader.startsWith('Bearer ')) {
     try {
       const token = authHeader.split(' ')[1];
       const decoded = jwt.verify(token, JWT_SECRET);
       if (decoded && decoded.rol === 'admin') isAdmin = true;
-    } catch (e) {}
+    } catch (e) { }
   }
 
-  if (!isAdmin && reqDateTime <= now) {
-    throw { status: 400, message: 'Solo los administradores pueden registrar una reserva con fecha y hora actual o pasada.' };
+  if (!isAdmin) {
+    const dosHorasDespues = new Date(now.getTime() + (2 * 60 * 60 * 1000));
+    if (reqDateTime < dosHorasDespues) {
+      throw { status: 400, message: 'La reserva debe realizarse con al menos 2 horas de anticipación a la hora actual.' };
+    }
   }
 
   const estadoInicial = (isAdmin && reqDateTime <= now) ? 'en_proceso' : 'pendiente';
@@ -101,12 +104,14 @@ const crearReserva = async (data, authHeader) => {
   if (correo_dueno) {
     enviarCorreoRegistro(correo_dueno, nombre_dueno, patente, fecha_reserva, nuevaReserva.id).catch(console.error);
   }
-  
+
+  console.log(`Nueva reserva creada con éxito para la patente ${patente}, estado inicial: ${estadoInicial}`);
+
   return { bus, reservacion: nuevaReserva };
 };
 
 const obtenerReservaPendiente = async (patente) => {
-  const reservacion = await Reservacion.findOne({ 
+  const reservacion = await Reservacion.findOne({
     where: { estado: ['pendiente', 'en_proceso'] },
     include: [{
       model: Bus,
@@ -120,7 +125,7 @@ const obtenerReservaPendiente = async (patente) => {
 const confirmarAsistencia = async (id) => {
   const reservacion = await Reservacion.findByPk(id);
   if (!reservacion) throw { status: 404, message: 'Reserva no encontrada' };
-  
+
   if (reservacion.estado === 'pendiente') {
     reservacion.estado = 'en_proceso';
     await reservacion.save();
