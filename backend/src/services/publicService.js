@@ -90,24 +90,38 @@ const crearReserva = async (data, authHeader) => {
     where: { bus_id: bus.id, estado: ['pendiente', 'en_proceso'] }
   });
 
+  let reservaFinal;
+
   if (reservaExistente) {
-    throw { status: 400, message: 'Este vehículo ya tiene una reserva activa o se encuentra ingresado en el taller.' };
+    if (reservaExistente.estado === 'en_proceso') {
+      throw { status: 400, message: 'Este vehículo ya se encuentra ingresado en el taller.' };
+    }
+    
+    // Si está en 'pendiente', simplemente actualizamos su fecha (y estado si corresponde)
+    reservaExistente.fecha_reserva = fecha_reserva;
+    reservaExistente.estado = estadoInicial;
+    await reservaExistente.save();
+    reservaFinal = reservaExistente;
+  } else {
+    // 4. Crear la nueva reserva
+    reservaFinal = await Reservacion.create({
+      bus_id: bus.id,
+      fecha_reserva,
+      estado: estadoInicial
+    });
   }
 
-  // 4. Crear la nueva reserva
-  const nuevaReserva = await Reservacion.create({
-    bus_id: bus.id,
-    fecha_reserva,
-    estado: estadoInicial
-  });
+  console.log(`[EXITO] Reserva registrada/actualizada para el Bus ${patente} con el Dueño RUT ${rut_dueno}`);
 
   if (correo_dueno) {
-    enviarCorreoRegistro(correo_dueno, nombre_dueno, patente, fecha_reserva, nuevaReserva.id).catch(console.error);
+    try {
+      await enviarCorreoRegistro(correo_dueno, nombre_dueno, patente, new Date(fecha_reserva), reservaFinal.id);
+    } catch (error) {
+      console.error('Error enviando correo de confirmación:', error);
+    }
   }
 
-  console.log(`Nueva reserva creada con éxito para la patente ${patente}, estado inicial: ${estadoInicial}`);
-
-  return { bus, reservacion: nuevaReserva };
+  return { bus, reservacion: reservaFinal };
 };
 
 const obtenerReservaPendiente = async (patente) => {
