@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { API_URL } from '../utils/api';
+import { obtenerCliente, obtenerVehiculo, crearReserva } from '../services/landing.service';
 import Swal from 'sweetalert2';
 
 function LandingForm() {
@@ -107,9 +107,9 @@ function LandingForm() {
 
     setBuscandoCliente(true);
     try {
-      const response = await fetch(`${API_URL}/api/clientes/${rut}`);
-      if (response.ok) {
-        const data = await response.json();
+      const response = await obtenerCliente(rut);
+      if (response.status === 200) {
+        const data = response.data;
         setDatosFormulario(prev => ({
           ...prev,
           nombre_dueno: data.nombre_completo || prev.nombre_dueno,
@@ -130,9 +130,9 @@ function LandingForm() {
 
     setBuscandoPatente(true);
     try {
-      const response = await fetch(`${API_URL}/api/vehiculos/${patente}`);
-      if (response.ok) {
-        const data = await response.json();
+      const response = await obtenerVehiculo(patente);
+      if (response.status === 200) {
+        const data = response.data;
         setDatosFormulario(prev => ({
           ...prev,
           ano_fabricacion: data.ano_fabricacion || prev.ano_fabricacion,
@@ -203,32 +203,23 @@ function LandingForm() {
       datosAEnviar.fecha_reserva = `${datosFormulario.fecha_reserva}T${datosFormulario.hora_reserva}`;
       delete datosAEnviar.hora_reserva;
 
-      const token = localStorage.getItem('token');
-      const headers = { 'Content-Type': 'application/json' };
-      if (token) {
-        headers['Authorization'] = `Bearer ${token}`;
-      }
+      const response = await crearReserva(datosAEnviar);
 
-      const response = await fetch(`${API_URL}/api/reserva-atencion`, {
-        method: 'POST',
-        headers: headers,
-        body: JSON.stringify(datosAEnviar)
-      });
-
-      if (response.ok) {
-        const responseData = await response.json();
-        if (responseData.estado === 'en_proceso') {
-          navigate('/recepcion');
-        } else {
-          setExito(true);
-          setDatosFormulario({
-            patente: '', marca_carroceria: '', modelo_carroceria: '', marca_chasis: '', modelo_chasis: '', ano_fabricacion: '',
-            rut_dueno: '', nombre_dueno: '', correo_dueno: '', telefono_dueno: '',
-            rut_conductor: '', nombre_conductor: '', telefono_conductor: '', fecha_reserva: '', hora_reserva: ''
-          });
-        }
+      const responseData = response.data;
+      if (responseData.estado === 'en_proceso') {
+        navigate('/recepcion');
       } else {
-        const errorData = await response.json();
+        setExito(true);
+        setDatosFormulario({
+          patente: '', marca_carroceria: '', modelo_carroceria: '', marca_chasis: '', modelo_chasis: '', ano_fabricacion: '',
+          rut_dueno: '', nombre_dueno: '', correo_dueno: '', telefono_dueno: '',
+          rut_conductor: '', nombre_conductor: '', telefono_conductor: '', fecha_reserva: '', hora_reserva: ''
+        });
+      }
+    } catch (error) {
+      console.error('Error al reservar hora:', error);
+      if (error.response && error.response.data) {
+        const errorData = error.response.data;
         let errorMessage = 'Error: ' + (errorData.error || 'Ocurrió un problema al procesar la solicitud');
         
         if (errorData.details && Array.isArray(errorData.details)) {
@@ -239,10 +230,9 @@ function LandingForm() {
         }
         
         Swal.fire('Error', errorMessage, 'error');
+      } else {
+        Swal.fire('Error', 'Error al conectar con el servidor', 'error');
       }
-    } catch (error) {
-      console.error('Error al reservar hora:', error);
-      Swal.fire('Error', 'Error al conectar con el servidor', 'error');
     } finally {
       setCargando(false);
     }

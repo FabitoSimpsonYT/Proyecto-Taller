@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/Dashboard.css';
-import api from '../services/api';
+import { obtenerBusesAdmin, confirmarAsistenciaAdmin, marcarInasistenciaAdmin } from '../services/dashboard.service';
+import { registrarUsuarioApi } from '../services/auth.service';
 import { AuthContext } from '../context/AuthContext';
 import Swal from 'sweetalert2';
 
@@ -18,7 +19,7 @@ function Dashboard({ manejarCierreSesion }) {
 
   const obtenerBuses = async () => {
     try {
-      const response = await api.get('/admin/buses');
+      const response = await obtenerBusesAdmin();
       setBuses(response.data);
     } catch (error) {
       console.error('Error al obtener buses:', error);
@@ -127,7 +128,7 @@ function Dashboard({ manejarCierreSesion }) {
 function AdminPendientes({ buses, onUpdate, navigate }) {
   const confirmarAsistencia = async (busId) => {
     try {
-      await api.post('/admin/confirmar-asistencia', { bus_id: busId });
+      await confirmarAsistenciaAdmin(busId);
       Swal.fire({
         icon: 'success',
         title: 'Asistencia confirmada',
@@ -158,7 +159,7 @@ function AdminPendientes({ buses, onUpdate, navigate }) {
     if (!result.isConfirmed) return;
     
     try {
-      await api.post('/admin/marcar-inasistencia', { bus_id: busId });
+      await marcarInasistenciaAdmin(busId);
       Swal.fire('Registrada', 'Inasistencia registrada exitosamente.', 'success');
       onUpdate();
     } catch (error) {
@@ -238,7 +239,7 @@ function GestionUsuarios() {
     setMensaje('');
     setError('');
     try {
-      await api.post('/auth/registrar', datosFormulario);
+      await registrarUsuarioApi(datosFormulario);
       setMensaje('Usuario creado exitosamente');
       setDatosFormulario({ nombre_completo: '', correo: '', contrasena: '', rol: 'mecanico' });
     } catch (err) {

@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect } from 'react';
-import api from '../services/api';
+import { obtenerPerfil, iniciarSesionApi } from '../services/auth.service';
 
 export const AuthContext = createContext();
 
@@ -15,7 +15,7 @@ export const AuthProvider = ({ children }) => {
       if (token && usuarioGuardado) {
         try {
           // Validar el token con el backend (asumiendo que /auth/perfil requiere token)
-          await api.get('/auth/perfil');
+          await obtenerPerfil();
           // Si no hay error, el token es válido
           setUsuario(JSON.parse(usuarioGuardado));
         } catch (error) {
@@ -34,7 +34,7 @@ export const AuthProvider = ({ children }) => {
 
   const iniciarSesion = async (correo, contrasena) => {
     try {
-      const response = await api.post('/auth/iniciar-sesion', { correo, contrasena });
+      const response = await iniciarSesionApi(correo, contrasena);
       const { token, usuario: nuevoUsuario } = response.data;
       
       localStorage.setItem('token', token);
