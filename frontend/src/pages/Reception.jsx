@@ -68,12 +68,10 @@ function Reception() {
     }
   };
 
-  const manejarConfirmar = async (e) => {
+  const manejarGuardar = async (e, finalizar = false) => {
     e.preventDefault();
-    if (!busSeleccionado) return;
-
     setEstadoEnvio({ cargando: true, error: null, exito: null });
-    
+
     try {
       const itemsArray = listaTrabajo.map(item => ({
         nombre_item: item.name,
@@ -83,15 +81,21 @@ function Reception() {
       const worklistRes = await guardarWorklist(
         busSeleccionado.id,
         itemsArray,
-        notas
+        notas,
+        finalizar
       );
 
       if (worklistRes.status === 200 || worklistRes.status === 201) {
-        setEstadoEnvio({ cargando: false, error: null, exito: 'Diagnóstico guardado exitosamente. El bus ha pasado al Taller.' });
-        setTimeout(() => {
-          setBusSeleccionado(null);
+        setEstadoEnvio({ cargando: false, error: null, exito: finalizar ? 'Diagnóstico guardado exitosamente. El bus ha pasado al Taller.' : 'Progreso guardado.' });
+        if (finalizar) {
+          setTimeout(() => {
+            setBusSeleccionado(null);
+            obtenerBuses();
+          }, 2000);
+        } else {
+          // Si solo guarda progreso, refrescamos la lista por si acaso pero nos quedamos en la pantalla
           obtenerBuses();
-        }, 2000);
+        }
       } else {
         setEstadoEnvio({ cargando: false, error: 'Error al guardar diagnóstico', exito: null });
       }
@@ -275,7 +279,7 @@ function Reception() {
               </aside>
 
               <div className="repair-form-panel">
-                <form onSubmit={manejarConfirmar}>
+                <form onSubmit={(e) => manejarGuardar(e, false)}>
                   <h3>Checklist de Inspección Visual</h3>
                   
                   <div className="repuestos-section">
@@ -337,15 +341,27 @@ function Reception() {
                   )}
 
                   <div className="form-actions" style={{ marginTop: '30px', display: 'flex', flexDirection: 'column', gap: '15px' }}>
-                    <button 
-                      type="submit" 
-                      className="btn-submit"
-                      disabled={estadoEnvio.cargando}
-                      style={{ background: 'linear-gradient(45deg, #fce300, #ffb300)', color: '#111', width: '100%', padding: '15px', fontWeight: 'bold', border: 'none', borderRadius: '8px', cursor: 'pointer' }}
-                    >
-                      {estadoEnvio.cargando ? 'Guardando...' : 'ACTUALIZAR WORKLIST'}
-                    </button>
-                    
+                    <div style={{ display: 'flex', gap: '15px' }}>
+                      <button 
+                        type="button" 
+                        className="btn-submit"
+                        onClick={(e) => manejarGuardar(e, false)}
+                        disabled={estadoEnvio.cargando}
+                        style={{ flex: 1, background: '#333', color: '#fff', padding: '15px', fontWeight: 'bold', border: '1px solid #555', borderRadius: '8px', cursor: 'pointer' }}
+                      >
+                        {estadoEnvio.cargando ? 'Guardando...' : 'GUARDAR PROGRESO'}
+                      </button>
+
+                      <button 
+                        type="button" 
+                        className="btn-submit"
+                        onClick={(e) => manejarGuardar(e, true)}
+                        disabled={estadoEnvio.cargando}
+                        style={{ flex: 1, background: 'linear-gradient(45deg, #fce300, #ffb300)', color: '#111', padding: '15px', fontWeight: 'bold', border: 'none', borderRadius: '8px', cursor: 'pointer' }}
+                      >
+                        {estadoEnvio.cargando ? 'Guardando...' : 'FINALIZAR Y ENVIAR A TALLER'}
+                      </button>
+                    </div>
                     <button 
                       type="button" 
                       className="btn-reject"

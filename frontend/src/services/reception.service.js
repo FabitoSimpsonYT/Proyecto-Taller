@@ -13,11 +13,12 @@ export const obtenerBusesEnRecepcion = async () => {
   return response;
 };
 
-export const guardarWorklist = async (busId, itemsArray, notas) => {
+export const guardarWorklist = async (busId, itemsArray, notas, finalizar = false) => {
   const response = await api.post('/admin/inspecciones/lista-trabajo', {
     bus_id: busId,
     items: itemsArray,
-    notas_examen: notas
+    notas_examen: notas,
+    finalizar
   });
   return response;
 };

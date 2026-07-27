@@ -30,7 +30,7 @@ function Dashboard({ manejarCierreSesion }) {
 
   const busesPendientes = buses.filter(b => b.estado === 'pendiente');
   const busesEnProceso = buses.filter(b => b.estado === 'en_proceso');
-  const busesEnTaller = buses.filter(b => ['aprobado', 'rechazado'].includes(b.estado));
+  const busesEnTaller = buses.filter(b => b.estado === 'en_taller');
 
   if (cargandoBuses) {
     return <div className="dashboard-container"><p>Cargando datos del taller...</p></div>;

@@ -16,14 +16,14 @@ const obtenerReservasPendientes = async (req, res, next) => {
 
 const confirmarAsistenciaAdmin = async (req, res, next) => {
   try {
-    const result = await adminService.confirmarAsistencia(req.body.bus_id);
+    const result = await adminService.confirmarAsistencia(req.body.bus_id, req.user.id);
     res.json(result);
   } catch (error) { next(error); }
 };
 
 const marcarInasistenciaAdmin = async (req, res, next) => {
   try {
-    const result = await adminService.marcarInasistencia(req.body.bus_id);
+    const result = await adminService.marcarInasistencia(req.body.bus_id, req.user.id);
     res.json(result);
   } catch (error) { next(error); }
 };
@@ -58,8 +58,29 @@ const obtenerInspeccionPorBusId = async (req, res, next) => {
 
 const rechazarIngreso = async (req, res, next) => {
   try {
-    const result = await adminService.rechazarIngreso(req.body.bus_id);
+    const result = await adminService.rechazarIngreso(req.body.bus_id, req.user.id);
     res.json(result);
+  } catch (error) { next(error); }
+};
+
+const obtenerBusesParaDespacho = async (req, res, next) => {
+  try {
+    const result = await adminService.obtenerBusesParaDespacho();
+    res.json(result);
+  } catch (error) { next(error); }
+};
+
+const marcarComoEntregado = async (req, res, next) => {
+  try {
+    const result = await adminService.marcarComoEntregado(req.params.bus_id, req.user.id);
+    res.json(result);
+  } catch (error) { next(error); }
+};
+
+const obtenerHistorialCompleto = async (req, res, next) => {
+  try {
+    const reservaciones = await adminService.obtenerHistorialCompleto();
+    res.json(reservaciones);
   } catch (error) { next(error); }
 };
 
@@ -72,5 +93,8 @@ module.exports = {
   rechazarIngreso,
   enviarReparacion,
   obtenerReparacionesPorBusId,
-  obtenerInspeccionPorBusId
+  obtenerInspeccionPorBusId,
+  obtenerBusesParaDespacho,
+  marcarComoEntregado,
+  obtenerHistorialCompleto
 };

@@ -27,7 +27,12 @@ const obtenerVehiculoPorPatente = async (patente) => {
 };
 
 const crearReserva = async (data, authHeader) => {
-  const { patente, rut_dueno, nombre_dueno, correo_dueno, telefono_dueno, fecha_reserva, marca_carroceria, modelo_carroceria, marca_chasis, modelo_chasis, ano_fabricacion } = data;
+  const { 
+    patente, rut_dueno, nombre_dueno, correo_dueno, telefono_dueno, 
+    fecha_reserva, marca_carroceria, modelo_carroceria, 
+    marca_chasis, modelo_chasis, ano_fabricacion,
+    detalles_visuales
+  } = data;
 
   if (!patente || !rut_dueno || !nombre_dueno || !fecha_reserva) {
     throw { status: 400, message: 'Faltan datos obligatorios, incluyendo la fecha de reserva' };
@@ -100,6 +105,7 @@ const crearReserva = async (data, authHeader) => {
     // Si está en 'pendiente', simplemente actualizamos su fecha (y estado si corresponde)
     reservaExistente.fecha_reserva = fecha_reserva;
     reservaExistente.estado = estadoInicial;
+    if (detalles_visuales) reservaExistente.detalles_cliente = detalles_visuales;
     await reservaExistente.save();
     reservaFinal = reservaExistente;
   } else {
@@ -107,7 +113,8 @@ const crearReserva = async (data, authHeader) => {
     reservaFinal = await Reservacion.create({
       bus_id: bus.id,
       fecha_reserva,
-      estado: estadoInicial
+      estado: estadoInicial,
+      detalles_cliente: detalles_visuales || []
     });
   }
 

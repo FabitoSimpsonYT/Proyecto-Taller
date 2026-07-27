@@ -9,7 +9,7 @@ async function createDefaultUsers() {
     await sequelize.authenticate();
     
     // Sincronizar modelos (por si acaso)
-    await sequelize.sync();
+    await sequelize.sync({ alter: true });
 
     // Comprobar y crear Admin
     const adminExists = await Usuario.findOne({ where: { correo: 'admin@gmail.com' } });

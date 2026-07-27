@@ -18,4 +18,7 @@ router.post('/inspecciones/rechazar-ingreso', adminController.rechazarIngreso);
 router.get('/inspecciones/:bus_id', adminController.obtenerInspeccionPorBusId);
 router.post('/reparaciones', adminController.enviarReparacion);
 router.get('/reparaciones/:bus_id', adminController.obtenerReparacionesPorBusId);
+router.get('/despacho', adminController.obtenerBusesParaDespacho);
+router.post('/despacho/:bus_id/entregar', adminController.marcarComoEntregado);
+router.get('/historial', adminController.obtenerHistorialCompleto);
 module.exports = router;

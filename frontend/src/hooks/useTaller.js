@@ -28,7 +28,7 @@ export const useTaller = () => {
     setCargando(true);
     try {
       const response = await obtenerBusesTaller();
-      setBuses(response.data.filter(b => ['aprobado', 'rechazado'].includes(b.estado) || b.estado === 'en_proceso'));
+      setBuses(response.data.filter(b => b.estado === 'en_taller'));
     } catch (error) {
       console.error('Error al obtener buses:', error);
     } finally {

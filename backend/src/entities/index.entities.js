@@ -17,6 +17,12 @@ Bus.belongsTo(Persona, { as: 'Conductor', foreignKey: 'conductor_id' });
 Bus.hasMany(Reservacion, { foreignKey: 'bus_id' });
 Reservacion.belongsTo(Bus, { foreignKey: 'bus_id' });
 
+Usuario.hasMany(Reservacion, { foreignKey: 'recepcionista_id' });
+Reservacion.belongsTo(Usuario, { as: 'Recepcionista', foreignKey: 'recepcionista_id' });
+
+Usuario.hasMany(Reservacion, { foreignKey: 'despachador_id' });
+Reservacion.belongsTo(Usuario, { as: 'Despachador', foreignKey: 'despachador_id' });
+
 // Relaciones Inspecciones
 Bus.hasMany(Inspeccion, { foreignKey: 'bus_id' });
 Inspeccion.belongsTo(Bus, { foreignKey: 'bus_id' });
