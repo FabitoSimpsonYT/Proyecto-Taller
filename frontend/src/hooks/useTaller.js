@@ -152,7 +152,8 @@ export const useTaller = () => {
         bus_id: datosReparacion.bus_id,
         descripcion: 'Salida autorizada sin reparaciones.',
         repuestos_utilizados: [],
-        estado: 'completado'
+        estado: 'completado',
+        salida_sin_reparar: true
       });
 
       setEstadoEnvio({ cargando: false, error: null, exito: 'Salida autorizada exitosamente.' });

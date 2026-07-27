@@ -111,7 +111,7 @@ const rechazarIngreso = async (bus_id, usuario_id) => {
 };
 
 const enviarReparacion = async (usuarioId, data) => {
-  const { bus_id, descripcion, repuestos_utilizados, estado } = data;
+  const { bus_id, descripcion, repuestos_utilizados, estado, salida_sin_reparar } = data;
   
   await Reparacion.create({
     bus_id,
@@ -127,7 +127,11 @@ const enviarReparacion = async (usuarioId, data) => {
   });
 
   if (reservacionActiva) {
-    reservacionActiva.estado = (estado === 'completado') ? 'aprobado' : 'en_taller';
+    if (salida_sin_reparar) {
+      reservacionActiva.estado = 'rechazado';
+    } else {
+      reservacionActiva.estado = (estado === 'completado') ? 'aprobado' : 'en_taller';
+    }
     await reservacionActiva.save();
   }
 
