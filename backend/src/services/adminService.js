@@ -7,8 +7,8 @@ const obtenerTodosLosBuses = async () => {
         model: Bus,
         include: [{ model: Persona, as: 'Dueno' }]
       },
-      { model: Usuario, as: 'Recepcionista', attributes: ['id', 'nombre', 'rol'] },
-      { model: Usuario, as: 'Despachador', attributes: ['id', 'nombre', 'rol'] }
+      { model: Usuario, as: 'Recepcionista', attributes: ['id', 'nombre_completo', 'rol'] },
+      { model: Usuario, as: 'Despachador', attributes: ['id', 'nombre_completo', 'rol'] }
     ],
     order: [['creado_en', 'DESC']]
   });
@@ -36,7 +36,7 @@ const obtenerReservasPendientes = async () => {
         model: Bus,
         include: [{ model: Persona, as: 'Dueno' }]
       },
-      { model: Usuario, as: 'Recepcionista', attributes: ['id', 'nombre', 'rol'] }
+      { model: Usuario, as: 'Recepcionista', attributes: ['id', 'nombre_completo', 'rol'] }
     ],
     order: [['creado_en', 'DESC']]
   });
@@ -144,7 +144,7 @@ const obtenerReparaciones = async (bus_id) => {
 const obtenerInspeccion = async (bus_id) => {
   const inspeccion = await Inspeccion.findOne({ 
     where: { bus_id }, 
-    include: [{ model: Usuario, as: 'Inspector', attributes: ['id', 'nombre', 'rol'] }],
+    include: [{ model: Usuario, as: 'Inspector', attributes: ['id', 'nombre_completo', 'rol'] }],
     order: [['fecha_inspeccion', 'DESC']] 
   });
   return inspeccion || {};
@@ -161,7 +161,7 @@ const obtenerBusesParaDespacho = async () => {
         model: Bus,
         include: [{ model: Persona, as: 'Dueno' }]
       },
-      { model: Usuario, as: 'Recepcionista', attributes: ['id', 'nombre', 'rol'] }
+      { model: Usuario, as: 'Recepcionista', attributes: ['id', 'nombre_completo', 'rol'] }
     ],
     order: [['creado_en', 'DESC']]
   });
@@ -209,14 +209,14 @@ const obtenerHistorialCompleto = async () => {
           { model: Persona, as: 'Conductor' },
           { 
             model: Reparacion,
-            include: [{ model: Usuario, as: 'Mecanico', attributes: ['id', 'nombre', 'rol'] }],
+            include: [{ model: Usuario, as: 'Mecanico', attributes: ['id', 'nombre_completo', 'rol'] }],
             order: [['fecha_reparacion', 'DESC']],
             limit: 1 // esto solo trae la última reparación si la hubiera
           }
         ]
       },
-      { model: Usuario, as: 'Recepcionista', attributes: ['id', 'nombre', 'rol'] },
-      { model: Usuario, as: 'Despachador', attributes: ['id', 'nombre', 'rol'] }
+      { model: Usuario, as: 'Recepcionista', attributes: ['id', 'nombre_completo', 'rol'] },
+      { model: Usuario, as: 'Despachador', attributes: ['id', 'nombre_completo', 'rol'] }
     ],
     order: [['creado_en', 'DESC']]
   });

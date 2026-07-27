@@ -102,7 +102,7 @@ function Dispatch() {
                     </p>
                     {bus.estado === 'rechazado' && bus.Recepcionista && (
                       <p style={{ color: '#ff4444', fontSize: '13px' }}>
-                        Rechazado por: {bus.Recepcionista.nombre}
+                        Rechazado por: {bus.Recepcionista.nombre_completo}
                       </p>
                     )}
                   </div>

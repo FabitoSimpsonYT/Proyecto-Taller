@@ -235,7 +235,7 @@ function Reception() {
                 {busSeleccionado.Recepcionista && (
                   <div className="info-group" style={{ marginTop: '10px' }}>
                     <label>Asistencia confirmada por</label>
-                    <p style={{ color: '#00cc6a', fontWeight: 'bold' }}>{busSeleccionado.Recepcionista.nombre}</p>
+                    <p style={{ color: '#00cc6a', fontWeight: 'bold' }}>{busSeleccionado.Recepcionista.nombre_completo}</p>
                   </div>
                 )}
                 {busSeleccionado.detalles_cliente && busSeleccionado.detalles_cliente.length > 0 && (

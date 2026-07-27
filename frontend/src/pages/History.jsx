@@ -103,17 +103,17 @@ function History() {
                       </td>
                       <td style={{ padding: '15px 10px', fontSize: '13px' }}>
                         {res.Recepcionista ? (
-                          <span style={{ color: '#aaa' }}>{res.Recepcionista.nombre}</span>
+                          <span style={{ color: '#aaa' }}>{res.Recepcionista.nombre_completo}</span>
                         ) : '-'}
                       </td>
                       <td style={{ padding: '15px 10px', fontSize: '13px' }}>
                         {res.Mecanico ? (
-                          <span style={{ color: '#aaa' }}>{res.Mecanico.nombre}</span>
+                          <span style={{ color: '#aaa' }}>{res.Mecanico.nombre_completo}</span>
                         ) : '-'}
                       </td>
                       <td style={{ padding: '15px 10px', fontSize: '13px' }}>
                         {res.Despachador ? (
-                          <span style={{ color: '#aaa' }}>{res.Despachador.nombre}</span>
+                          <span style={{ color: '#aaa' }}>{res.Despachador.nombre_completo}</span>
                         ) : '-'}
                       </td>
                     </tr>

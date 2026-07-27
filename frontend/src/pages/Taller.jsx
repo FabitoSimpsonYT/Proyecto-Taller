@@ -112,7 +112,7 @@ function Taller() {
                     <h4 style={{ color: '#fce300', marginTop: 0 }}>Diagnóstico Recepción</h4>
                     {diagnosticoInicial.Inspector && (
                       <p style={{ color: '#aaa', fontSize: '12px', margin: '0 0 10px 0' }}>
-                        Realizado por: <strong style={{ color: '#fff' }}>{diagnosticoInicial.Inspector.nombre}</strong>
+                        Realizado por: <strong style={{ color: '#fff' }}>{diagnosticoInicial.Inspector.nombre_completo}</strong>
                       </p>
                     )}
                     <ul style={{ margin: 0, paddingLeft: '20px', color: '#ccc', fontSize: '13px' }}>
