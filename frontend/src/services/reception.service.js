@@ -19,3 +19,9 @@ export const guardarWorklist = async (busId, itemsArray, notas) => {
   });
   return response;
 };
+export const rechazarIngreso = async (busId) => {
+  const response = await api.post('/admin/inspecciones/rechazar-ingreso', {
+    bus_id: busId
+  });
+  return response;
+};

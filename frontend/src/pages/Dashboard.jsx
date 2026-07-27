@@ -78,7 +78,7 @@ function Dashboard({ manejarCierreSesion }) {
                 onClick={() => navigate('/recepcion')}
                 style={{ width: '100%', maxWidth: '350px', backgroundColor: '#2a2a2a', border: '2px solid #00cc6a', borderRadius: '15px', padding: '40px', cursor: 'pointer', transition: '0.3s', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
               >
-                <h2 style={{ color: '#00cc6a', marginBottom: '10px' }}>Worklist de Recepción</h2>
+                <h2 style={{ color: '#00cc6a', marginBottom: '10px' }}>Diagnóstico de Recepción</h2>
                 <p style={{ color: '#aaa', margin: 0 }}>Realizar diagnóstico inicial e ingresar bus al taller.</p>
                 <span style={{ marginTop: '20px', backgroundColor: '#00cc6a', color: 'black', padding: '5px 15px', borderRadius: '20px', fontWeight: 'bold' }}>{busesEnProceso.length} Recepcionadas</span>
               </button>

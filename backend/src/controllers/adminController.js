@@ -56,12 +56,20 @@ const obtenerInspeccionPorBusId = async (req, res, next) => {
   } catch (error) { next(error); }
 };
 
+const rechazarIngreso = async (req, res, next) => {
+  try {
+    const result = await adminService.rechazarIngreso(req.body.bus_id);
+    res.json(result);
+  } catch (error) { next(error); }
+};
+
 module.exports = {
   obtenerTodosLosBuses,
   obtenerReservasPendientes,
   confirmarAsistenciaAdmin,
   marcarInasistenciaAdmin,
   enviarInspeccion,
+  rechazarIngreso,
   enviarReparacion,
   obtenerReparacionesPorBusId,
   obtenerInspeccionPorBusId

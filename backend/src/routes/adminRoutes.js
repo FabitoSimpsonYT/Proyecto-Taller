@@ -14,6 +14,7 @@ router.post('/inspecciones/marcar-inasistencia', adminController.marcarInasisten
 router.post('/confirmar-asistencia', adminController.confirmarAsistenciaAdmin); // Para compatibilidad con Dashboard
 router.post('/marcar-inasistencia', adminController.marcarInasistenciaAdmin); // Para compatibilidad con Dashboard
 router.post('/inspecciones/lista-trabajo', adminController.enviarInspeccion);
+router.post('/inspecciones/rechazar-ingreso', adminController.rechazarIngreso);
 router.get('/inspecciones/:bus_id', adminController.obtenerInspeccionPorBusId);
 router.post('/reparaciones', adminController.enviarReparacion);
 router.get('/reparaciones/:bus_id', adminController.obtenerReparacionesPorBusId);

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { obtenerBusesEnRecepcion, guardarWorklist } from '../services/reception.service';
+import { obtenerBusesEnRecepcion, guardarWorklist, rechazarIngreso } from '../services/reception.service';
 import { obtenerPerfil } from '../services/auth.service';
 import '../styles/Taller.css';
 
@@ -105,6 +105,32 @@ function Reception() {
     }
   };
 
+  const manejarRechazoIngreso = async () => {
+    if (!busSeleccionado) return;
+    if (!window.confirm('¿Estás seguro de que el cliente desea retirar la máquina sin realizar reparaciones? Esto cancelará la recepción.')) return;
+
+    setEstadoEnvio({ cargando: true, error: null, exito: null });
+    try {
+      const res = await rechazarIngreso(busSeleccionado.id);
+      if (res.status === 200 || res.status === 201) {
+        setEstadoEnvio({ cargando: false, error: null, exito: 'El ingreso ha sido rechazado correctamente.' });
+        setTimeout(() => {
+          setBusSeleccionado(null);
+          obtenerBuses();
+        }, 2000);
+      } else {
+        setEstadoEnvio({ cargando: false, error: 'Error al rechazar el ingreso.', exito: null });
+      }
+    } catch (error) {
+      console.error('Error rechazando ingreso:', error);
+      if (error.response && error.response.data && error.response.data.error) {
+        setEstadoEnvio({ cargando: false, error: error.response.data.error, exito: null });
+      } else {
+        setEstadoEnvio({ cargando: false, error: 'Error de conexión con el servidor.', exito: null });
+      }
+    }
+  };
+
   return (
     <div className="taller-container">
       <header className="taller-header">
@@ -112,7 +138,7 @@ function Reception() {
           <button className="btn-back" onClick={() => navigate('/dashboard')}>
             ← Volver al Panel
           </button>
-          <h1>Worklist de Recepción</h1>
+          <h1>Diagnóstico de Recepción</h1>
         </div>
         <div className="user-info">
           <span className="user-name">{perfilUsuario?.nombre}</span>
@@ -279,14 +305,24 @@ function Reception() {
                     </div>
                   )}
 
-                  <div className="form-actions" style={{ marginTop: '30px' }}>
+                  <div className="form-actions" style={{ marginTop: '30px', display: 'flex', flexDirection: 'column', gap: '15px' }}>
                     <button 
                       type="submit" 
                       className="btn-submit"
                       disabled={estadoEnvio.cargando}
-                      style={{ background: 'linear-gradient(45deg, #fce300, #ffb300)', color: '#111', width: '100%' }}
+                      style={{ background: 'linear-gradient(45deg, #fce300, #ffb300)', color: '#111', width: '100%', padding: '15px', fontWeight: 'bold', border: 'none', borderRadius: '8px', cursor: 'pointer' }}
                     >
                       {estadoEnvio.cargando ? 'Guardando...' : 'ACTUALIZAR WORKLIST'}
+                    </button>
+                    
+                    <button 
+                      type="button" 
+                      className="btn-reject"
+                      onClick={manejarRechazoIngreso}
+                      disabled={estadoEnvio.cargando}
+                      style={{ background: 'transparent', color: '#ff4444', width: '100%', padding: '15px', fontWeight: 'bold', border: '2px solid #ff4444', borderRadius: '8px', cursor: 'pointer' }}
+                    >
+                      X RECHAZAR INGRESO (CLIENTE RETIRA MÁQUINA)
                     </button>
                   </div>
                 </form>

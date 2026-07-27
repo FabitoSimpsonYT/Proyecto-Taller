@@ -77,6 +77,20 @@ const enviarInspeccion = async (usuarioId, data) => {
   return { message: 'Inspección registrada con éxito', inspeccion: nuevaInspeccion };
 };
 
+const rechazarIngreso = async (bus_id) => {
+  const reservacionActiva = await Reservacion.findOne({
+    where: { bus_id, estado: ['en_proceso', 'pendiente'] }
+  });
+  
+  if (!reservacionActiva) {
+    throw { status: 404, message: 'Reserva no encontrada para este bus' };
+  }
+  
+  reservacionActiva.estado = 'rechazado';
+  await reservacionActiva.save();
+  return { message: 'El cliente ha rechazado la reparación y retirado la máquina.' };
+};
+
 const enviarReparacion = async (usuarioId, data) => {
   const { bus_id, descripcion, repuestos_utilizados, estado } = data;
   
@@ -120,6 +134,7 @@ module.exports = {
   confirmarAsistencia,
   marcarInasistencia,
   enviarInspeccion,
+  rechazarIngreso,
   enviarReparacion,
   obtenerReparaciones,
   obtenerInspeccion
