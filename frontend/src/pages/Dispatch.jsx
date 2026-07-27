@@ -90,7 +90,7 @@ function Dispatch() {
                   <div className="bus-card-header">
                     <h3>{bus.patente}</h3>
                     <span className={`status-badge ${bus.estado === 'rechazado' ? 'rejected' : 'success'}`} style={{ backgroundColor: bus.estado === 'rechazado' ? '#ff4444' : '#4CAF50', color: 'white', padding: '5px 12px', borderRadius: '6px', fontSize: '12px', fontWeight: 'bold' }}>
-                      {bus.estado === 'rechazado' ? 'RECHAZADO' : 'REPARADO'}
+                      {bus.estado === 'rechazado' ? 'DESPACHADO POR RECHAZO' : 'REPARADO'}
                     </span>
                   </div>
                   <div className="bus-card-body">
