@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react';
-import api from '../services/api';
+import { obtenerBusesTaller, obtenerReparaciones, obtenerInspecciones, guardarReparacion } from '../services/taller.service';
 import { AuthContext } from '../context/AuthContext';
 
 export const useTaller = () => {
@@ -27,7 +27,7 @@ export const useTaller = () => {
   const obtenerBuses = async () => {
     setCargando(true);
     try {
-      const response = await api.get('/admin/buses');
+      const response = await obtenerBusesTaller();
       setBuses(response.data.filter(b => ['aprobado', 'rechazado'].includes(b.estado) || b.estado === 'en_proceso'));
     } catch (error) {
       console.error('Error al obtener buses:', error);
@@ -38,7 +38,7 @@ export const useTaller = () => {
 
   const obtenerHistorialBus = async (busId) => {
     try {
-      const response = await api.get(`/admin/reparaciones/${busId}`);
+      const response = await obtenerReparaciones(busId);
       setHistorialBus(response.data);
     } catch (error) {
       console.error('Error al obtener historial:', error);
@@ -59,7 +59,7 @@ export const useTaller = () => {
     obtenerHistorialBus(bus.id);
     
     try {
-      const res = await api.get(`/admin/inspecciones/${bus.id}`);
+      const res = await obtenerInspecciones(bus.id);
       const data = res.data;
         
       if (typeof data.items === 'string') {
@@ -116,7 +116,7 @@ export const useTaller = () => {
     setEstadoEnvio({ cargando: true, error: null, exito: null });
     
     try {
-      await api.post('/admin/reparaciones', {
+      await guardarReparacion({
         ...datosReparacion,
         repuestos_utilizados: datosReparacion.repuestos_utilizados.map(r => ({
           repuesto: r.pieza_danada && r.pieza_danada !== 'Adicional' ? `[Para ${r.pieza_danada}] ${r.repuesto}` : r.repuesto,
@@ -148,7 +148,7 @@ export const useTaller = () => {
     setEstadoEnvio({ cargando: true, error: null, exito: null });
     
     try {
-      await api.post('/admin/reparaciones', {
+      await guardarReparacion({
         bus_id: datosReparacion.bus_id,
         descripcion: 'Salida autorizada sin reparaciones.',
         repuestos_utilizados: [],

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { API_URL } from '../utils/api';
+import { obtenerBusesEnRecepcion, guardarWorklist } from '../services/reception.service';
+import { obtenerPerfil } from '../services/auth.service';
 import '../styles/Taller.css';
 
 function Reception() {
@@ -10,8 +11,6 @@ function Reception() {
   const [busSeleccionado, setBusSeleccionado] = useState(null);
   const [perfilUsuario, setPerfilUsuario] = useState(null);
   const [estadoEnvio, setEstadoEnvio] = useState({ cargando: false, error: null, exito: null });
-  
-  const token = localStorage.getItem('token');
 
   // Worklist State
   const [listaTrabajo, setListaTrabajo] = useState([]);
@@ -25,13 +24,10 @@ function Reception() {
 
   const obtenerPerfilUsuario = async () => {
     try {
-      const response = await fetch(`${API_URL}/api/auth/perfil`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
+      const response = await obtenerPerfil();
 
-      if (response.ok) {
-        const user = await response.json();
-        setPerfilUsuario(user);
+      if (response.status === 200) {
+        setPerfilUsuario(response.data);
         await obtenerBuses();
       } else {
         navigate('/login');
@@ -45,13 +41,10 @@ function Reception() {
   const obtenerBuses = async () => {
     setCargando(true);
     try {
-      const response = await fetch(`${API_URL}/api/admin/buses`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
+      const response = await obtenerBusesEnRecepcion();
 
-      if (response.ok) {
-        const data = await response.json();
-        setBuses(data.filter(b => b.estado === 'en_proceso'));
+      if (response.status === 200) {
+        setBuses(response.data.filter(b => b.estado === 'en_proceso'));
       }
     } catch (error) {
       console.error('Error al obtener buses:', error);
@@ -87,32 +80,28 @@ function Reception() {
         estado: item.status
       }));
 
-      const worklistRes = await fetch(`${API_URL}/api/admin/inspecciones/lista-trabajo`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          bus_id: busSeleccionado.id,
-          items: itemsArray,
-          notas_examen: notas
-        })
-      });
+      const worklistRes = await guardarWorklist(
+        busSeleccionado.id,
+        itemsArray,
+        notas
+      );
 
-      if (worklistRes.ok) {
+      if (worklistRes.status === 200 || worklistRes.status === 201) {
         setEstadoEnvio({ cargando: false, error: null, exito: 'Diagnóstico guardado exitosamente. El bus ha pasado al Taller.' });
         setTimeout(() => {
           setBusSeleccionado(null);
           obtenerBuses();
         }, 2000);
       } else {
-        const err = await worklistRes.json();
-        setEstadoEnvio({ cargando: false, error: err.error || 'Error al guardar diagnóstico', exito: null });
+        setEstadoEnvio({ cargando: false, error: 'Error al guardar diagnóstico', exito: null });
       }
     } catch (error) {
       console.error('Error enviando lista de trabajo:', error);
-      setEstadoEnvio({ cargando: false, error: 'Error de conexión con el servidor.', exito: null });
+      if (error.response && error.response.data && error.response.data.error) {
+        setEstadoEnvio({ cargando: false, error: error.response.data.error, exito: null });
+      } else {
+        setEstadoEnvio({ cargando: false, error: 'Error de conexión con el servidor.', exito: null });
+      }
     }
   };
 

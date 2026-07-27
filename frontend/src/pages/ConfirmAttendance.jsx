@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { API_URL } from '../utils/api';
+import { confirmarReserva } from '../services/attendance.service';
 
 function ConfirmarAsistencia() {
   const { id } = useParams();
@@ -10,14 +10,9 @@ function ConfirmarAsistencia() {
   useEffect(() => {
     const confirmar = async () => {
       try {
-        const response = await fetch(`${API_URL}/api/reserva-atencion/${id}/confirmar`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        });
-
-        if (response.ok) {
+        const response = await confirmarReserva(id);
+        
+        if (response.status === 200 || response.status === 201) {
           setEstado('exito');
         } else {
           setEstado('error');
