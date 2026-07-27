@@ -42,8 +42,8 @@ async function testDataBase() {
   try {
     await sequelize.authenticate();
     console.log('Conexión a MariaDB establecida correctamente.');
-    // Sincroniza los modelos con la base de datos
-    await sequelize.sync();
+    // Sincroniza los modelos con la base de datos y altera las tablas si es necesario
+    await sequelize.sync({ alter: true });
     console.log('Tablas sincronizadas correctamente.');
   } catch (error) {
     console.error('No se pudo conectar a la base de datos:', error);
