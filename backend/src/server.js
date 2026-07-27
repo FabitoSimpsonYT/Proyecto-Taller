@@ -10,6 +10,7 @@ const sequelize = require('./config/database');
 const apiRoutes = require('./routes/index.routes');
 
 const app = express();
+app.set('trust proxy', 1); // Confiar en el proxy reverso (Apache) para que express-rate-limit funcione correctamente
 const PORT = process.env.PORT || 5000;
 
 // Middleware de Seguridad: CORS
