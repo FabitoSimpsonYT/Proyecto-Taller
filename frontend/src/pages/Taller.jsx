@@ -110,6 +110,11 @@ function Taller() {
                 {diagnosticoInicial && (
                   <div style={{ marginTop: '20px', backgroundColor: 'rgba(255,255,255,0.1)', padding: '15px', borderRadius: '10px' }}>
                     <h4 style={{ color: '#fce300', marginTop: 0 }}>Diagnóstico Recepción</h4>
+                    {diagnosticoInicial.Inspector && (
+                      <p style={{ color: '#aaa', fontSize: '12px', margin: '0 0 10px 0' }}>
+                        Realizado por: <strong style={{ color: '#fff' }}>{diagnosticoInicial.Inspector.nombre}</strong>
+                      </p>
+                    )}
                     <ul style={{ margin: 0, paddingLeft: '20px', color: '#ccc', fontSize: '13px' }}>
                       {diagnosticoInicial.items && Array.isArray(diagnosticoInicial.items) && diagnosticoInicial.items.map((it, i) => (
                         <li key={i}>{it.nombre_item}: {it.estado === 'aprobado' ? '✅' : it.estado === 'rechazado' ? '❌' : '⏳'}</li>

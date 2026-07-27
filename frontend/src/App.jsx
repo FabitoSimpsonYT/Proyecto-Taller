@@ -6,6 +6,8 @@ import LandingForm from './pages/LandingForm';
 import ConfirmarAsistencia from './pages/ConfirmAttendance';
 import Reception from './pages/Reception';
 import Taller from './pages/Taller';
+import Dispatch from './pages/Dispatch';
+import History from './pages/History';
 import LandingPage from './pages/LandingPage';
 import ErrorBoundary from './components/ErrorBoundary';
 import { AuthContext } from './context/AuthContext';
@@ -50,6 +52,16 @@ function App() {
             <Route path="/taller" element={
               <AuthGate>
                 <Taller manejarCierreSesion={cerrarSesion} />
+              </AuthGate>
+            } />
+            <Route path="/despacho" element={
+              <AuthGate>
+                <Dispatch />
+              </AuthGate>
+            } />
+            <Route path="/historial" element={
+              <AuthGate>
+                <History />
               </AuthGate>
             } />
           </Routes>

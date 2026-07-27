@@ -6,7 +6,9 @@ export const obtenerBusesEnRecepcion = async () => {
     ...res.Bus,
     estado: res.estado,
     fecha_reserva: res.fecha_reserva,
-    reserva_id: res.id
+    reserva_id: res.id,
+    detalles_cliente: res.detalles_cliente,
+    Recepcionista: res.Recepcionista
   }));
   return response;
 };

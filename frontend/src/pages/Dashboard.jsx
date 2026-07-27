@@ -93,11 +93,27 @@ function Dashboard({ manejarCierreSesion }) {
               </button>
 
               <button 
+                onClick={() => navigate('/despacho')}
+                style={{ width: '100%', maxWidth: '350px', backgroundColor: '#2a2a2a', border: '2px solid #ff9800', borderRadius: '15px', padding: '40px', cursor: 'pointer', transition: '0.3s', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+              >
+                <h2 style={{ color: '#ff9800', marginBottom: '10px' }}>Módulo de Despacho</h2>
+                <p style={{ color: '#aaa', margin: 0 }}>Gestionar la salida y entrega de vehículos a los clientes.</p>
+              </button>
+
+              <button 
                 onClick={() => navigate('/agendar')}
                 style={{ width: '100%', maxWidth: '350px', backgroundColor: '#2a2a2a', border: '2px solid #3b82f6', borderRadius: '15px', padding: '40px', cursor: 'pointer', transition: '0.3s', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
               >
                 <h2 style={{ color: '#3b82f6', marginBottom: '10px' }}>Crear Reserva</h2>
                 <p style={{ color: '#aaa', margin: 0 }}>Agendar hora manualmente en el sistema.</p>
+              </button>
+
+              <button 
+                onClick={() => navigate('/historial')}
+                style={{ width: '100%', maxWidth: '350px', backgroundColor: '#2a2a2a', border: '2px solid #e91e63', borderRadius: '15px', padding: '40px', cursor: 'pointer', transition: '0.3s', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+              >
+                <h2 style={{ color: '#e91e63', marginBottom: '10px' }}>Historial General</h2>
+                <p style={{ color: '#aaa', margin: 0 }}>Ver todas las reservas, auditorías y máquinas entregadas.</p>
               </button>
 
               {perfilUsuario?.rol === 'admin' && (

@@ -228,16 +228,47 @@ function Reception() {
                   <label>Reserva Original</label>
                   <p>{new Date(busSeleccionado.fecha_reserva).toLocaleString('es-CL')}</p>
                 </div>
-                {busSeleccionado.detalles_visuales && busSeleccionado.detalles_visuales.length > 0 && (
+                {busSeleccionado.Recepcionista && (
+                  <div className="info-group" style={{ marginTop: '10px' }}>
+                    <label>Asistencia confirmada por</label>
+                    <p style={{ color: '#00cc6a', fontWeight: 'bold' }}>{busSeleccionado.Recepcionista.nombre}</p>
+                  </div>
+                )}
+                {busSeleccionado.detalles_cliente && busSeleccionado.detalles_cliente.length > 0 && (
                   <>
                     <hr />
                     <div className="info-group">
-                      <label style={{ color: '#fce300' }}>Detalles a Visualizar (Cliente)</label>
-                      <ul style={{ paddingLeft: '20px', margin: '5px 0' }}>
-                        {busSeleccionado.detalles_visuales.map((detail, idx) => (
+                      <label style={{ color: '#fce300' }}>Reportado por el Cliente</label>
+                      <ul style={{ paddingLeft: '20px', margin: '10px 0', fontSize: '14px' }}>
+                        {busSeleccionado.detalles_cliente.map((detail, idx) => (
                           <li key={idx} style={{ marginBottom: '5px' }}>{detail}</li>
                         ))}
                       </ul>
+                      <button 
+                        type="button" 
+                        onClick={() => {
+                          const nuevosItems = busSeleccionado.detalles_cliente.map(detalle => ({
+                            name: detalle,
+                            status: 'pendiente'
+                          }));
+                          // Evitar duplicados simples
+                          const itemsFiltrados = nuevosItems.filter(nuevo => !listaTrabajo.some(existente => existente.name === nuevo.name));
+                          setListaTrabajo([...listaTrabajo, ...itemsFiltrados]);
+                        }}
+                        style={{ 
+                          width: '100%', 
+                          padding: '10px', 
+                          marginTop: '10px', 
+                          background: '#3b82f6', 
+                          color: 'white', 
+                          border: 'none', 
+                          borderRadius: '5px', 
+                          cursor: 'pointer', 
+                          fontWeight: 'bold' 
+                        }}
+                      >
+                        ↓ Traspasar a Diagnóstico
+                      </button>
                     </div>
                   </>
                 )}
@@ -322,7 +353,7 @@ function Reception() {
                       disabled={estadoEnvio.cargando}
                       style={{ background: 'transparent', color: '#ff4444', width: '100%', padding: '15px', fontWeight: 'bold', border: '2px solid #ff4444', borderRadius: '8px', cursor: 'pointer' }}
                     >
-                      X RECHAZAR INGRESO (CLIENTE RETIRA MÁQUINA)
+                      X RECHAZAR INGRESO (DESPACHO DE MÁQUINA)
                     </button>
                   </div>
                 </form>
