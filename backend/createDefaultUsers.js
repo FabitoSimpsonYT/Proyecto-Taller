@@ -1,6 +1,6 @@
 require('dotenv').config();
 const bcrypt = require('bcryptjs');
-const { User } = require('./src/entities/index.entities');
+const { Usuario } = require('./src/entities/index.entities');
 const sequelize = require('./src/config/database');
 
 async function createDefaultUsers() {
@@ -12,14 +12,15 @@ async function createDefaultUsers() {
     await sequelize.sync();
 
     // Comprobar y crear Admin
-    const adminExists = await User.findOne({ where: { email: 'admin@gmail.com' } });
+    const adminExists = await Usuario.findOne({ where: { correo: 'admin@gmail.com' } });
     if (!adminExists) {
       const adminHashedPassword = await bcrypt.hash('admin123', 10);
-      await User.create({
-        full_name: 'Administrador Principal',
-        email: 'admin@gmail.com',
-        password: adminHashedPassword,
-        role: 'admin'
+      await Usuario.create({
+        nombre_completo: 'Administrador Principal',
+        rut: '11111111-1',
+        correo: 'admin@gmail.com',
+        contrasena: adminHashedPassword,
+        rol: 'admin'
       });
       console.log('✅ Usuario Administrador creado: admin@gmail.com / admin123');
     } else {
@@ -27,14 +28,15 @@ async function createDefaultUsers() {
     }
 
     // Comprobar y crear Mecánico
-    const mecanicoExists = await User.findOne({ where: { email: 'mecanico@gmail.com' } });
+    const mecanicoExists = await Usuario.findOne({ where: { correo: 'mecanico@gmail.com' } });
     if (!mecanicoExists) {
       const mecanicoHashedPassword = await bcrypt.hash('mecanico123', 10);
-      await User.create({
-        full_name: 'Mecánico de Turno',
-        email: 'mecanico@gmail.com',
-        password: mecanicoHashedPassword,
-        role: 'mecanico'
+      await Usuario.create({
+        nombre_completo: 'Mecánico de Turno',
+        rut: '22222222-2',
+        correo: 'mecanico@gmail.com',
+        contrasena: mecanicoHashedPassword,
+        rol: 'mecanico'
       });
       console.log('✅ Usuario Mecánico creado: mecanico@gmail.com / mecanico123');
     } else {
