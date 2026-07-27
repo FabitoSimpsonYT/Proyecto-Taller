@@ -107,6 +107,20 @@ function Taller() {
                   <p>{busSeleccionado.marca_chasis} {busSeleccionado.modelo_chasis}</p>
                 </div>
                 
+                {busSeleccionado.detalles_cliente && busSeleccionado.detalles_cliente.length > 0 && (
+                  <>
+                    <hr />
+                    <div className="info-group">
+                      <label style={{ color: '#fce300' }}>Observaciones Cliente</label>
+                      <ul style={{ paddingLeft: '20px', margin: '10px 0', fontSize: '14px', color: '#ddd' }}>
+                        {busSeleccionado.detalles_cliente.map((detail, idx) => (
+                          <li key={idx} style={{ marginBottom: '5px' }}>{detail}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  </>
+                )}
+                
                 {diagnosticoInicial && (
                   <div style={{ marginTop: '20px', backgroundColor: 'rgba(255,255,255,0.1)', padding: '15px', borderRadius: '10px' }}>
                     <h4 style={{ color: '#fce300', marginTop: 0 }}>Diagnóstico Recepción</h4>

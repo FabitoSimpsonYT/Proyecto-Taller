@@ -211,6 +211,16 @@ function AdminPendientes({ buses, onUpdate, navigate }) {
                 {bus.Conductor?.nombre_completo && (
                   <p><strong>Chofer Asignado:</strong> {bus.Conductor.nombre_completo} ({bus.Conductor.rut})</p>
                 )}
+                {bus.detalles_cliente && bus.detalles_cliente.length > 0 && (
+                  <div style={{ marginTop: '10px', backgroundColor: 'rgba(255,255,255,0.05)', padding: '10px', borderRadius: '5px' }}>
+                    <p style={{ color: '#fce300', margin: '0 0 5px 0', fontSize: '13px' }}><strong>Observaciones Cliente:</strong></p>
+                    <ul style={{ margin: 0, paddingLeft: '20px', fontSize: '13px', color: '#ddd' }}>
+                      {bus.detalles_cliente.map((detalle, idx) => (
+                        <li key={idx}>{detalle}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
               </div>
               <div style={{ display: 'flex', gap: '10px', marginTop: '15px' }}>
                 <button

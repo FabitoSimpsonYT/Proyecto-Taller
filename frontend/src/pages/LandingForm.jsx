@@ -213,6 +213,12 @@ function LandingForm() {
       const datosAEnviar = { ...datosFormulario };
       datosAEnviar.fecha_reserva = `${datosFormulario.fecha_reserva}T${datosFormulario.hora_reserva}`;
       delete datosAEnviar.hora_reserva;
+      
+      // Auto-añadir cualquier detalle visual pendiente que el usuario no haya "añadido" con el botón
+      if (nuevoDetalle.trim() !== '') {
+        datosAEnviar.detalles_visuales = [...datosAEnviar.detalles_visuales, nuevoDetalle.trim()];
+        setNuevoDetalle(''); // limpiar
+      }
 
       const response = await crearReserva(datosAEnviar);
 

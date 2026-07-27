@@ -23,7 +23,8 @@ const obtenerTodosLosBuses = async () => {
       reserva_id: res.id,
       id: res.id,
       Recepcionista: res.Recepcionista,
-      Despachador: res.Despachador
+      Despachador: res.Despachador,
+      detalles_cliente: res.detalles_cliente
     };
   });
 };
