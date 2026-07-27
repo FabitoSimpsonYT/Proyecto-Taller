@@ -31,6 +31,7 @@ function Dashboard({ manejarCierreSesion }) {
   const busesPendientes = buses.filter(b => b.estado === 'pendiente');
   const busesEnProceso = buses.filter(b => b.estado === 'en_proceso');
   const busesEnTaller = buses.filter(b => b.estado === 'en_taller');
+  const busesEnDespacho = buses.filter(b => (b.estado === 'aprobado' || b.estado === 'rechazado') && !b.entregado);
 
   if (cargandoBuses) {
     return <div className="dashboard-container"><p>Cargando datos del taller...</p></div>;
@@ -98,6 +99,7 @@ function Dashboard({ manejarCierreSesion }) {
               >
                 <h2 style={{ color: '#ff9800', marginBottom: '10px' }}>Módulo de Despacho</h2>
                 <p style={{ color: '#aaa', margin: 0 }}>Gestionar la salida y entrega de vehículos a los clientes.</p>
+                <span style={{ marginTop: '20px', backgroundColor: '#ff9800', color: 'black', padding: '5px 15px', borderRadius: '20px', fontWeight: 'bold' }}>{busesEnDespacho.length} Por Entregar</span>
               </button>
 
               <button 
