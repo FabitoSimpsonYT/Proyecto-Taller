@@ -16,14 +16,14 @@ const authenticateToken = (req, res, next) => {
 };
 
 const requireAdmin = (req, res, next) => {
-  if (req.user.role !== 'admin') {
+  if (req.user.rol !== 'admin') {
     return res.status(403).json({ error: 'Acceso denegado. Se requiere rol de administrador.' });
   }
   next();
 };
 
 const requireMecanico = (req, res, next) => {
-  if (req.user.role !== 'mecanico' && req.user.role !== 'admin') {
+  if (req.user.rol !== 'mecanico' && req.user.rol !== 'admin') {
     return res.status(403).json({ error: 'Acceso denegado. Se requiere rol de mecánico.' });
   }
   next();
